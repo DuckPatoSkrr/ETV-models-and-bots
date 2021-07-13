@@ -1,19 +1,12 @@
-import sentimentAnalysis
+#import sentimentAnalysis
 import responseGeneration
-import sys
+
+#IGNORAR MAIN, AHORA MISMO ES SOLO PARA EL TESTEO
 
 # MAIN
 def main():
-    args = sys.argv
-
-    if args[1] == "-help":
-        print("Usage: ")
-    elif args[1] == "analyze":
-        sentimentAnalysis.analize()
-    elif args[1] == "response":
-        responseGeneration.getResponse("test","test","test")
-    else:
-        print("Error")
+    response = responseGeneration.getResponse("dummy","dummy")
+    print(response)
     exit(0)
 
     

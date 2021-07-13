@@ -1,8 +1,8 @@
 from nltk.tokenize.treebank import TreebankWordDetokenizer
 from nltk.lm import MLE
-
 import models
-def detokenize(result):
+
+def _detokenize(result):
     detokenizer = TreebankWordDetokenizer().detokenize
     content = []
     for token in result:
@@ -14,15 +14,6 @@ def detokenize(result):
     return detokenizer(content)
 
 
-def getTextSeed(msgtype):
-    return "yo opino"
-    #databas.getTextSeed(msgtype)
-
-
-def getResponse(usertype, msgtype, nwords = 20):
-
-    textSeed = getTextSeed(msgtype)
-    model = models.getModel(usertype)
-    result = model.generate(num_words=20, text_seed=textSeed)
-
-    return (detokenize(result))
+def getResponse(model, seed, nwords = 20):
+    result = model.generate(num_words=nwords, text_seed=seed)
+    return _detokenize(result)
