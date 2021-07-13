@@ -3,10 +3,10 @@ import responseGeneration
 import models
 
 
-class Bot:
+class BotInstance:
 
     name = "noname"
-    mymodels = []
+    _mymodels = []
     mymodelsnames = []
 
     def __init__(self, name):
@@ -17,15 +17,15 @@ class Bot:
         return responseGeneration.generateResponse(model, input)
 
     def generateText(self, myMood):
-        model = getModelBasedOnMood(myMood)
+        model = self._getModelBasedOnMood(myMood)
         return responseGeneration.generateText(model)
 
     def learn(self, corpus, nameOfMood):
-        mymodels.append(models.trainModel(corpus))
-        mymodelsnames.append(nameOfMood)
+        self._mymodels.append(models.trainModel(corpus))
+        self.mymodelsnames.append(nameOfMood)
 
     #PRIVATE
 
     def _getModelBasedOnMood(self, mood):
         #TODO
-        pass
+        return self._mymodels[0]

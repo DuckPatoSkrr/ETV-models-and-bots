@@ -14,6 +14,10 @@ def _detokenize(result):
     return detokenizer(content)
 
 
-def getResponse(model, seed, nwords = 20):
+def generateResponse(model, seed, nwords = 20):
     result = model.generate(num_words=nwords, text_seed=seed)
+    return _detokenize(result)
+
+def generateText(model, nwords = 20):
+    result = model.generate(num_words=nwords)
     return _detokenize(result)

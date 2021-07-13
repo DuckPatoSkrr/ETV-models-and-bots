@@ -1,12 +1,18 @@
-#import sentimentAnalysis
-import responseGeneration
-
+import Bot
 #IGNORAR MAIN, AHORA MISMO ES SOLO PARA EL TESTEO
 
 # MAIN
 def main():
-    response = responseGeneration.getResponse("dummy","dummy")
-    print(response)
+    myBot = Bot.BotInstance("jerry")
+    print(myBot.name)
+    corpus = ""
+    f = open("input", "r", encoding = "utf8")
+    for i in f:
+        corpus += i
+
+    myBot.learn(corpus, "Trump")
+    print(myBot.mymodelsnames)
+    print(myBot.generateText("Trump"))
     exit(0)
 
     
