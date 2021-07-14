@@ -1,18 +1,14 @@
 import Bot
 #IGNORAR MAIN, AHORA MISMO ES SOLO PARA EL TESTEO
 
+testCorpus = ["Hello my name is Ventura  and my dick is big.", "My peepee dont fit in my poopoo"]
+
 # MAIN
 def main():
     myBot = Bot.BotInstance("jerry")
     print(myBot.name)
-    corpus = ""
-    f = open("input", "r", encoding = "utf8")
-    for i in f:
-        corpus += i
-
-    myBot.learn(corpus, "Trump")
+    myBot.learn(testCorpus, "Test")
     print(myBot.mymodelsnames)
-    print(myBot.generateText("Trump"))
     exit(0)
 
     

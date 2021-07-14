@@ -1,13 +1,22 @@
 import responseGeneration
-
 import models
 
 
 class BotInstance:
 
+
+    #PRIVATE
+
+    def _getModelBasedOnMood(self, mood):
+        #TODO
+        return self._mymodels[0]
+
+
     name = "noname"
     _mymodels = []
     mymodelsnames = []
+
+    #PUBLIC
 
     def __init__(self, name):
         self.name = name
@@ -23,9 +32,3 @@ class BotInstance:
     def learn(self, corpus, nameOfMood):
         self._mymodels.append(models.trainModel(corpus))
         self.mymodelsnames.append(nameOfMood)
-
-    #PRIVATE
-
-    def _getModelBasedOnMood(self, mood):
-        #TODO
-        return self._mymodels[0]
