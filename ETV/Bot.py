@@ -30,5 +30,6 @@ class BotInstance:
         return responseGeneration.generateText(model)
 
     def learn(self, corpus, nameOfMood):
-        self._mymodels.append(models.trainModel(corpus))
+        #splitCorpus(corpus, train, test)
+        self._mymodels.append(models.trainModel(corpus, corpus))
         self.mymodelsnames.append(nameOfMood)
