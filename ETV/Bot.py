@@ -1,4 +1,4 @@
-import responseGeneration
+#import responseGeneration
 import models
 
 
@@ -22,7 +22,7 @@ class BotInstance:
         self.name = name
 
     def generateResponse(self, input, myMood):
-        model = _getModelBasedOnMood(myMood)
+        model = self._getModelBasedOnMood(myMood)
         return responseGeneration.generateResponse(model, input)
 
     def generateText(self, myMood):
