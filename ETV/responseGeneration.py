@@ -21,14 +21,16 @@ def _duple(input): #transform a list of str to a list of duples [("text",0),...]
 
 def _pipePositivity(input, posFactor):
     classifier = sentimentAnalysis.Classifier()
-
+    outList =[]
     for duple in input:
         prop = classifier.classify(duple[0])
-        duple[1] += 10 - (abs(posFactor - prop.sentiment_polarity) * 5)
+        res = 10 - (abs(posFactor - prop.sentiment_polarity) * 5)
+        outList.append((duple[0],duple[1] + res))
 
+    return outList
 
 def _pipeFormat(input,nchars): #format text, this doesn't change the puntuation
-
+    outList = []
     for duple in input:
         output = ""
         splitedInput = duple[0].split(".")
@@ -37,25 +39,26 @@ def _pipeFormat(input,nchars): #format text, this doesn't change the puntuation
             output += splitedInput[i] + "."
             i += 1
 
-        output.replace("\n\n", "\n")
-        duple[0] = output
+        output = output.replace("\n\n", "\n")
+        outList.append((output,duple[1]))
 
-    return input
+    return outList
 
-def _processedText(input, nchars,positivityFactor): #filters the output of the model TODO
+def _processedText(input, nchars,positivityFactor): #filters the output of the model
     output = _duple(input)
     output = _pipeFormat(output,nchars)
     output = _pipePositivity(output,positivityFactor)
     return _maxPoints(output)
 
 
-def generateResponse(model, prefix = None, nchars = default_max_output, number_of_responses = default_number_of_responses):
+def generateResponse(model, posFactor,
+                     prefix = None, nchars = default_max_output, number_of_responses = default_number_of_responses):
     sess = gpt2.start_tf_sess()
     gpt2.load_gpt2(sess, run_name=model)
     textGenerated = gpt2.generate(sess, prefix=prefix, run_name=model,
                                   batch_size=number_of_responses, nsamples=number_of_responses,
                                   return_as_list=True, length=default_max_words)
-    return _processedText(textGenerated,nchars)
+    return _processedText(textGenerated,nchars, posFactor)
 
 
 

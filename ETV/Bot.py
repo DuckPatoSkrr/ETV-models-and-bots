@@ -23,9 +23,10 @@ class BotInstance:
 
 
 
-    def generateResponse(self, myMood, prefix=None):
+    def generateResponse(self, myMood, positivityFactor,
+                         prefix=None):
         model = self._getModelBasedOnMood(myMood)
-        return responseGeneration.generateResponse(model, prefix)
+        return responseGeneration.generateResponse(model, positivityFactor, prefix)
 
 
     def learn(self, corpusPath, nameOfMood):
