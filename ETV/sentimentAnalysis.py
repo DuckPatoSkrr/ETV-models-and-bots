@@ -1,39 +1,30 @@
 import spacy
-from spacytextblob.spacytextblob import SpacyTextBlob
+import Properties
+import spacytextblob.spacytextblob
 
-def analize():
-    pass
+class Classifier:
+    nlp = None
+    spacy_text_blob = None
 
-class DocProperties:
     def __init__(self):
-        pnouns = []
-        adjectives = []
+        self.nlp = spacy.load("en_core_web_sm")
+        self.nlp.add_pipe("spacytextblob")
 
-    def __init__(self, intext):
-        pnouns = []
-        adjectives = []
-        self.classify(intext)
 
-    pnouns = []
-    adjetives = []
-    sentiment_polarity = 0
-    sentiment_assessments = []
-    sentiment_subjectivity = 0
 
     def classify(self, inText):
-        nlp = spacy.load("en_core_web_sm")
 
-        spacy_text_blob = SpacyTextBlob()
-        doc = nlp(inText)
-        spacy_text_blob = spacy_text_blob(doc)
-
-        self.sentiment_polarity = spacy_text_blob._.sentiment.polarity
-        self.sentiment_assessments = spacy_text_blob._.sentiment.assessments
-        self.sentiment_subjectivity = spacy_text_blob._.sentiment.subjectivity
-
+        doc = self.nlp(inText)
+        sentiment_polarity = doc._.polarity
+        sentiment_assessments = doc._.assessments
+        sentiment_subjectivity = doc._.subjectivity
+        pnouns = []
+        adjectives = []
         for i in doc:
             if i.pos_ == "PROPN":
-                self.pnouns.append(i)
+                pnouns.append(i)
             if i.pos_ == "ADJ":
-                self.adjetives.append(i)
+                adjectives.append(i)
+
+        return Properties.Properties(sentiment_polarity, sentiment_assessments, sentiment_subjectivity, pnouns, adjectives)
 

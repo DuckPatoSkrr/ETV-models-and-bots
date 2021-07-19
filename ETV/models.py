@@ -1,45 +1,20 @@
-from transformers import GPT2Tokenizer
-from transformers import GPT2Model
-from transformers import TrainingArguments
-from transformers import Trainer
-from datasets import load_dataset
-
-
-#raw_datasets = load_dataset("imdb")
-
-
+import os
+import gpt_2_simple as gpt2
+import utils
 # PRIVATE
-
-#loads dataset from csv file
-def _prepareDatasets(input):
-    return load_dataset( 'csv', data_files=input)
-
 
 #PUBLIC
 
+#corpus must be a txt
+def trainModel(corpusPath, nameOfModel, num_iterations = 5, _model_version = "124M"): #124M o 355M
+    if not os.path.isdir(os.path.join("models", _model_version)):
+        print(f"Downloading {_model_version} model...")
+        gpt2.download_gpt2(model_name=_model_version, model_dir="models")  # model is saved into current directory under /(model_dir)/(model_name)/
 
-#la entrada es un csv, la columna llamada data es la que debe contener los textos que se utilizaran
-def trainModel(corpusTrainPath, corpusEvalPath):
-    # formateo los csv a datasets
-    rawtrainset = _prepareDatasets(corpusTrainPath)
-    rawevalset = _prepareDatasets(corpusEvalPath)
+    utils.checkFile(corpusPath)
 
-    #tokenizamos
-    tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
-    tokenTrain = tokenizer(rawtrainset["train"]["data"])
-    tokenEval = tokenizer(rawevalset["train"]["data"])
+    sess = gpt2.start_tf_sess() #config (threads and external server)
+    gpt2.finetune(sess, corpusPath, model_name=_model_version, steps=num_iterations, run_name=nameOfModel)  # steps is max number of training step
 
-
-    #preparamos el modelo
-    model = GPT2Model.from_pretrained("gpt2")
-    training_args = TrainingArguments("test_trainer") #directorio para guardar checkpoints
-
-    #le proporcionamos al trainer el modelo con su configuracion, y el set de training y el de evaluacion
-    trainer = Trainer(
-        model=model, args=training_args, train_dataset=tokenTrain, eval_dataset=tokenEval
-    )
-
-    trainer.train()
-    return model
 
 

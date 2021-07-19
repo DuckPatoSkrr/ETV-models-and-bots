@@ -1,14 +1,9 @@
 import Bot
-#from gpt_2_finetuning import download_model
-#IGNORAR MAIN, AHORA MISMO ES SOLO PARA EL TESTEO
-
+import sentimentAnalysis
 # MAIN
 def main():
-    #download_model
-
-    tom = Bot.BotInstance("tom");
-    tom.learn("testDataset.csv", "test")
-
+    test = Bot.BotInstance("test",loadModels=["testMood"])
+    test.generateResponse("dummy")
     exit(0)
 
     
