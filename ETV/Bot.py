@@ -43,8 +43,7 @@ class BotInstance:
         return responseGeneration.generateResponse(model, positivityFactor, msgKeywords, prefix)
 
 
-    def learn(self, corpusPath, nameOfModel,keywords):
-        models.trainModel(corpusPath,nameOfModel)
+    def learn(self, nameOfModel,keywords):
         self.mymodelsnames.append(nameOfModel)
         self.modelKeywords[nameOfModel] = keywords
 

@@ -18,5 +18,7 @@ def trainModel(corpusPath, nameOfModel, num_iterations = 5, _model_version = "12
                   model_name=_model_version, steps=num_iterations, run_name=nameOfModel,
                   restore_from='fresh', multi_gpu=False,)  # steps is max number of training step
 
+    return 0
+
 
 

@@ -1,0 +1,4 @@
+create name
+trainModel name pathCorpus "keywords,..."
+trainBot jsonBot model
+getResponse jsonBot context filterParams
