@@ -2,8 +2,11 @@ import Bot
 import sentimentAnalysis
 # MAIN
 def main():
-    test = Bot.BotInstance("test",loadModels=["testMood"])
-    test.generateResponse("dummy")
+    test = Bot.BotInstance("test",loadModels=["testMood"],modelKeywords={"testMood":["key1","key2"]})
+    json = test.toJSON()
+    otroTest = Bot.jsonConstructor(json)
+    print(otroTest.toJSON())
+
     exit(0)
 
     

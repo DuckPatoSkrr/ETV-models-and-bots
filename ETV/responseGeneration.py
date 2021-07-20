@@ -44,21 +44,21 @@ def _pipeFormat(input,nchars): #format text, this doesn't change the puntuation
 
     return outList
 
-def _processedText(input, nchars,positivityFactor): #filters the output of the model
+def _processedText(input, nchars,positivityFactor, keywords): #filters the output of the model
     output = _duple(input)
     output = _pipeFormat(output,nchars)
     output = _pipePositivity(output,positivityFactor)
     return _maxPoints(output)
 
 
-def generateResponse(model, posFactor,
+def generateResponse(model, posFactor, keyWords,
                      prefix = None, nchars = default_max_output, number_of_responses = default_number_of_responses):
     sess = gpt2.start_tf_sess()
     gpt2.load_gpt2(sess, run_name=model)
     textGenerated = gpt2.generate(sess, prefix=prefix, run_name=model,
                                   batch_size=number_of_responses, nsamples=number_of_responses,
                                   return_as_list=True, length=default_max_words)
-    return _processedText(textGenerated,nchars, posFactor)
+    return _processedText(textGenerated,nchars, posFactor, keyWords)
 
 
 
