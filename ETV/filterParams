@@ -1,0 +1,7 @@
+(implemented)
+-k keyword1,keyword2    #keywords (default None)
+-pf float               #positivity factor (default None)
+-nc int                 #max number of chars (default -1, "i.e." no limit)
+-nor int                #number of responses of the model (default 10)
+
+(not implemented)

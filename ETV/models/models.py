@@ -1,15 +1,17 @@
 import os
 import gpt_2_simple as gpt2
-import utils
+from misc import utils
+
+
 # PRIVATE
 
 #PUBLIC
 
 #corpus must be a txt
 def trainModel(corpusPath, nameOfModel, num_iterations = 5, _model_version = "124M"): #124M o 355M
-    if not os.path.isdir(os.path.join("models", _model_version)):
+    if not os.path.isdir(os.path.join("", _model_version)):
         print(f"Downloading {_model_version} model...")
-        gpt2.download_gpt2(model_name=_model_version, model_dir="models")  # model is saved into current directory under /(model_dir)/(model_name)/
+        gpt2.download_gpt2(model_name=_model_version, model_dir="")  # model is saved into current directory under /(model_dir)/(model_name)/
 
     utils.checkFile(corpusPath)
 

@@ -1,2 +1,0 @@
-class InvalidCharsError(Exception):
-    pass

@@ -1,6 +1,7 @@
 import spacy
-import Properties
-import spacytextblob.spacytextblob
+from spacytextblob import spacytextblob
+from sentiment_analysis import Properties
+
 
 class Classifier:
     nlp = None
@@ -22,9 +23,9 @@ class Classifier:
         adjectives = []
         for i in doc:
             if i.pos_ == "PROPN":
-                pnouns.append(i)
+                pnouns.append(str(i))
             if i.pos_ == "ADJ":
-                adjectives.append(i)
+                adjectives.append(str(i))
 
         return Properties.Properties(sentiment_polarity, sentiment_assessments, sentiment_subjectivity, pnouns, adjectives)
 
