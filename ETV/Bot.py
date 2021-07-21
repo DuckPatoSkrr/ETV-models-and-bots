@@ -1,5 +1,7 @@
 import responseGeneration
 import json
+import sentimentAnalysis
+import utils
 
 
 def _punt(modelK, inputK):
@@ -8,7 +10,13 @@ def _punt(modelK, inputK):
         if(m in modelK):
             ret += 1
     return ret
-
+def _extractKWfromContext(context): #devuelve lista
+    classifier = sentimentAnalysis.Classifier()
+    prop = classifier.classify(context)
+    ret = []
+    ret = utils.copyList(prop.pnouns,ret)
+    ret = utils.copyList(prop.adjectives,ret)
+    return ret
 
 class BotInstance:
 
@@ -36,10 +44,12 @@ class BotInstance:
         self.mymodelsnames = loadModels
         self.modelKeywords = modelKeywords
 
-    def generateResponse(self, modelKeywords, filterParams,
+    def generateResponse(self, context, filterParams,
                          prefix=None):
+        modelKeywords = _extractKWfromContext(context)
         model = self._getModelBasedOnMood(modelKeywords)
-        return responseGeneration.generateResponse(model, filterParams.posFactor, filterParams.keywords, prefix)
+        return responseGeneration.generateResponse(model, filterParams.posFactor, filterParams.keywords,
+                                                   prefix)
 
 
     def learn(self, nameOfModel,keywords):

@@ -20,6 +20,10 @@ def checkFloat(n):
     if not isinstance(n,float):
         raise customErrors.InvalidCharsError("Not a float")
 
+def checkInt(n):
+    if not isinstance(n,int):
+        raise customErrors.InvalidCharsError("Not a int")
+
 def error(msg):
     raise customErrors.FatalError(msg)
 
@@ -39,10 +43,10 @@ def decModelDescriptor(md): #devuelve diccionario con elementos
 class FilterParams:
     keywords =[]
     posFactor = None
+    nchars = -1
+    number_of_responses = 10
 
 
-#-k keyword1,keyword2
-#-pf float
 def filterParams(vec, pos): #devuelve objeto FilterParams
     ret = FilterParams()
     for i in range(pos,len(vec)):
@@ -59,8 +63,28 @@ def filterParams(vec, pos): #devuelve objeto FilterParams
                 checkFloat(vec[i])
             except customErrors.InvalidCharsError as e:
                 error("bad param: posFactor" + " - " + str(e))
-            ret.posFactor = vec[i]
+            ret.posFactor = float(vec[i])
+        elif(vec[i] == "-nc"):
+            i += 1
+            try:
+                checkInt(vec[i])
+            except customErrors.InvalidCharsError as e:
+                error("bad param: max number of chars" + " - " + str(e))
+            ret.posFactor = int(vec[i])
+        elif(vec[i] == "-nor"):
+            i += 1
+            try:
+                checkInt(vec[i])
+            except customErrors.InvalidCharsError as e:
+                error("bad param: number of responses" + " - " + str(e))
+            ret.number_of_responses = int(vec[i])
         else:
-            error("unknown param: " + vec[i])
+            error("unknown param: " + str(vec[i]))
 
     return ret
+
+
+def copyList(src,dest):
+    for i in src:
+        dest.append(i)
+    return dest

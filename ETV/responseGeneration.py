@@ -20,6 +20,8 @@ def _duple(input): #transform a list of str to a list of duples [("text",0),...]
     return output
 
 def _pipePositivity(input, posFactor):
+    if(posFactor is None):
+        return input
     classifier = sentimentAnalysis.Classifier()
     outList =[]
     for duple in input:
@@ -30,6 +32,8 @@ def _pipePositivity(input, posFactor):
     return outList
 
 def _pipeFormat(input,nchars): #format text, this doesn't change the puntuation
+    if(nchars == -1):
+        return input
     outList = []
     for duple in input:
         output = ""
@@ -51,8 +55,12 @@ def _processedText(input, nchars,positivityFactor, keywords): #filters the outpu
     return _maxPoints(output)
 
 
-def generateResponse(model, posFactor, keyWords,
-                     prefix = None, nchars = default_max_output, number_of_responses = default_number_of_responses):
+def generateResponse(model,
+                     posFactor,
+                     keyWords,
+                     nchars,
+                     number_of_responses,
+                     prefix = None):
     sess = gpt2.start_tf_sess()
     gpt2.load_gpt2(sess, run_name=model)
     textGenerated = gpt2.generate(sess, prefix=prefix, run_name=model,
