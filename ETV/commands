@@ -1,4 +1,4 @@
 create name
 trainModel name pathCorpus "keywords,..."
-trainBot jsonBot model
+trainBot jsonBot modelDescriptor
 getResponse jsonBot context filterParams

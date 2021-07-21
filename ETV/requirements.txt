@@ -1,4 +1,4 @@
-#python==3.7.0
+#python==3.7.0 (64 bits)
 tensorflow==1.15.2
 regex
 requests
@@ -7,4 +7,5 @@ numpy
 toposort
 spacy
 spacytextblob
-#python -m spacy download en_core_web_sm
+(comandos a ejecutar en consola, preferiblemente en el entorno)
+python -m spacy download en_core_web_sm

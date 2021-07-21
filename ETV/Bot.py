@@ -1,29 +1,29 @@
 import responseGeneration
-import models
 import json
+
+
+def _punt(modelK, inputK):
+    ret = 0
+    for m in inputK:
+        if(m in modelK):
+            ret += 1
+    return ret
+
 
 class BotInstance:
 
     #PRIVATE
 
-    def _punt(self, modelK, inputK):
-        ret = 0
-        for m in inputK:
-            if(m in modelK):
-                ret += 1
-        return ret
-
     def _getModelBasedOnMood(self, keyw):
-        max = 0
+        maxn = 0
         ret = None
         for m in self.mymodelsnames:
-            points = self._punt(self.modelKeywords[m], keyw)
-            if(points > max):
+            points = _punt(self.modelKeywords[m], keyw)
+            if(points > maxn):
                 ret = m
-                max = points
+                maxn = points
 
         return ret
-
 
     name = "noname"
     mymodelsnames = []
@@ -36,11 +36,10 @@ class BotInstance:
         self.mymodelsnames = loadModels
         self.modelKeywords = modelKeywords
 
-
-    def generateResponse(self, modelKeywords, positivityFactor, msgKeywords,
+    def generateResponse(self, modelKeywords, filterParams,
                          prefix=None):
         model = self._getModelBasedOnMood(modelKeywords)
-        return responseGeneration.generateResponse(model, positivityFactor, msgKeywords, prefix)
+        return responseGeneration.generateResponse(model, filterParams.posFactor, filterParams.keywords, prefix)
 
 
     def learn(self, nameOfModel,keywords):
@@ -51,8 +50,8 @@ class BotInstance:
         jsonFile = {"name":self.name,"mymodelsnames":self.mymodelsnames,"modelKeywords":self.modelKeywords}
         return json.dumps(jsonFile)
 
-def jsonConstructor(input):
-    out = json.loads(input)
+def jsonConstructor(inpt):
+    out = json.loads(inpt)
     name = out["name"]
     modelsList = out["mymodelsnames"]
     modelKw = out["modelKeywords"]
