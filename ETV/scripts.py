@@ -1,7 +1,5 @@
-import Bot
+from misc import Bot, customErrors, utils
 import models
-import utils
-import customErrors
 import sys
 
 
@@ -11,18 +9,18 @@ def create(name):
 def trainModel(name,pathCorpus, rawKW):
     try:
         utils.checkFile(pathCorpus)
-        utils.checkAlphanumeric(rawKW,",")
+        utils.checkAlphanumeric(rawKW, ",")
     except FileNotFoundError as e:
         utils.error("Bad path" + " - " + str(e))
     except customErrors.InvalidCharsError as e:
-        utils.error("Invalid keywords"+ " - " + str(e))
+        utils.error("Invalid keywords" + " - " + str(e))
 
     kw = rawKW.split(",")
     if(models.trainModel(pathCorpus, name) != 0):
         utils.error("Error while training model")
 
     #descriptor de modelo
-    return utils.modelDescriptor(name,kw)
+    return utils.modelDescriptor(name, kw)
 
 
 def trainBot(jsonBot,model):
@@ -56,7 +54,7 @@ def _main():
     elif (v[1] == "getResponse"): #getResponse jsonBot context filterParams
         if (len(v) < 4):
             utils.error("Usage \"getResponse jsonBot \"context\" (filterParams, read filterParams file for more information)\"")
-        filterParams = utils.filterParams(v,4)
+        filterParams = utils.filterParams(v, 4)
         return getResponse(v[2],v[3],filterParams)
     else:
         utils.error("Unknown command")

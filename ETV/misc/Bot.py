@@ -1,6 +1,7 @@
-import responseGeneration
+import customErrors
+from response_generation import responseGeneration
 import json
-import sentimentAnalysis
+from sentiment_analysis import sentimentAnalysis
 import utils
 
 
@@ -14,8 +15,8 @@ def _extractKWfromContext(context): #devuelve lista
     classifier = sentimentAnalysis.Classifier()
     prop = classifier.classify(context)
     ret = []
-    ret = utils.copyList(prop.pnouns,ret)
-    ret = utils.copyList(prop.adjectives,ret)
+    ret = utils.copyList(prop.pnouns, ret)
+    ret = utils.copyList(prop.adjectives, ret)
     return ret
 
 class BotInstance:
@@ -30,6 +31,9 @@ class BotInstance:
             if(points > maxn):
                 ret = m
                 maxn = points
+
+        if ret is None:
+            ret = self.mymodelsnames[utils.getRandomInt(b=len(self.mymodelsnames) - 1)]
 
         return ret
 
@@ -61,8 +65,11 @@ class BotInstance:
         return json.dumps(jsonFile)
 
 def jsonConstructor(inpt):
-    out = json.loads(inpt)
-    name = out["name"]
-    modelsList = out["mymodelsnames"]
-    modelKw = out["modelKeywords"]
+    try:
+        out = json.loads(inpt)
+        name = out["name"]
+        modelsList = out["mymodelsnames"]
+        modelKw = out["modelKeywords"]
+    except Exception as e:
+        raise customErrors.BadParamError("Bad JSON constructor: " + str(e))
     return BotInstance(name,modelsList,modelKw)

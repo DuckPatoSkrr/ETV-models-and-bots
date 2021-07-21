@@ -1,5 +1,5 @@
 import gpt_2_simple as gpt2
-import sentimentAnalysis
+from sentiment_analysis import sentimentAnalysis
 
 default_max_output = 500
 default_number_of_responses = 10

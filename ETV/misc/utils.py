@@ -1,5 +1,6 @@
-import customErrors
+from misc import customErrors
 import json
+import random
 
 def checkFile(path): #checks if the file is available, throws exception otherwise
     try:
@@ -17,11 +18,16 @@ def checkAlphanumeric(inpt, *extrachars):
             raise customErrors.InvalidCharsError("Not alphanumeric or in extrachars")
 
 def checkFloat(n):
-    if not isinstance(n,float):
+    try:
+        float(n)
+    except ValueError:
         raise customErrors.InvalidCharsError("Not a float")
 
+
 def checkInt(n):
-    if not isinstance(n,int):
+    try:
+        int(n)
+    except ValueError:
         raise customErrors.InvalidCharsError("Not a int")
 
 def error(msg):
@@ -49,7 +55,8 @@ class FilterParams:
 
 def filterParams(vec, pos): #devuelve objeto FilterParams
     ret = FilterParams()
-    for i in range(pos,len(vec)):
+    i = pos
+    while i in range(pos,len(vec)):
         if(vec[i] == "-k"):
             i += 1
             try:
@@ -70,7 +77,7 @@ def filterParams(vec, pos): #devuelve objeto FilterParams
                 checkInt(vec[i])
             except customErrors.InvalidCharsError as e:
                 error("bad param: max number of chars" + " - " + str(e))
-            ret.posFactor = int(vec[i])
+            ret.nchars = int(vec[i])
         elif(vec[i] == "-nor"):
             i += 1
             try:
@@ -80,6 +87,7 @@ def filterParams(vec, pos): #devuelve objeto FilterParams
             ret.number_of_responses = int(vec[i])
         else:
             error("unknown param: " + str(vec[i]))
+        i += 1
 
     return ret
 
@@ -88,3 +96,9 @@ def copyList(src,dest):
     for i in src:
         dest.append(i)
     return dest
+
+def getRandomInt(a = 0,b=None):
+    if(b == None):
+        return int(random.random())
+
+    return random.randint(a,b)
