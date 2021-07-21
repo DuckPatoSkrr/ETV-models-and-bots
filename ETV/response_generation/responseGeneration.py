@@ -1,10 +1,6 @@
 import gpt_2_simple as gpt2
 from sentiment_analysis import sentimentAnalysis
 
-default_max_output = 500
-default_number_of_responses = 10
-default_max_words = 300
-
 def _maxPoints(list):
     max = list[0]
     for i in list:

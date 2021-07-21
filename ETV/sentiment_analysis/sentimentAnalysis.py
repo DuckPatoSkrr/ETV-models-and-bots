@@ -1,5 +1,6 @@
 import spacy
-import Properties
+from spacytextblob import spacytextblob
+from sentiment_analysis import Properties
 
 
 class Classifier:

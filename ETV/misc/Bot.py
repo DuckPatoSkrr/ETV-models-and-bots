@@ -1,9 +1,7 @@
-import customErrors
+from misc import customErrors, utils
 from response_generation import responseGeneration
 import json
 from sentiment_analysis import sentimentAnalysis
-import utils
-
 
 def _punt(modelK, inputK):
     ret = 0
@@ -52,7 +50,8 @@ class BotInstance:
                          prefix=None):
         modelKeywords = _extractKWfromContext(context)
         model = self._getModelBasedOnMood(modelKeywords)
-        return responseGeneration.generateResponse(model, filterParams.posFactor, filterParams.keywords,
+        return responseGeneration.generateResponse(model, filterParams.posFactor, filterParams.keywords, filterParams.nchars,
+                                                   filterParams.number_of_responses,
                                                    prefix)
 
 

@@ -98,7 +98,7 @@ def copyList(src,dest):
     return dest
 
 def getRandomInt(a = 0,b=None):
-    if(b == None):
+    if(b is None):
         return int(random.random())
 
     return random.randint(a,b)
