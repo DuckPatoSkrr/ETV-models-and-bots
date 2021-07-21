@@ -44,6 +44,40 @@ def _pipeFormat(input,nchars): #format text, this doesn't change the puntuation
 
     return outList
 
+def _pipeKeywords(input, keywords): #gives points for each keyword that appears. Amount of each keyword does NOT matter, better for short texts
+    if len(keywords) == 0:
+        return input
+
+    outList = []
+    for duple in input:
+        appearances = 0
+        for word in keywords:
+            if duple[0].find(word) > -1:
+                appearances += 1
+        score = (appearances * 10) / len(keywords)
+        outList.append((duple[0], duple[1] + score))
+    return outList
+
+def _pipeKeywordCount(input, keywords): #gives points the more times keywords appear. Repeated keywords also add points. Can be useful for long texts
+    if len(keywords) == 0:
+        return input
+
+    outList = []
+    auxList = []
+    maxScore = 0
+    for duple in input:
+        appearances = 0
+        text_array = duple[0].split
+        for word in keywords:
+            appearances += text_array.count(word)
+        if appearances > maxScore:
+            maxScore = appearances
+        auxList.append((duple[0], duple[1], appearances))
+    for aux in auxList:
+        score = (aux[2] * 10) / maxScore
+        outList.append((aux[0], aux[1] + score))
+    return outList
+
 def _processedText(input, nchars,positivityFactor, keywords): #filters the output of the model
     output = _duple(input)
     output = _pipeFormat(output,nchars)
