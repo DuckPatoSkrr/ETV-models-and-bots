@@ -1,6 +1,7 @@
 from misc import customErrors
 import json
 import random
+import os
 
 def checkFile(path): #checks if the file is available, throws exception otherwise
     try:
@@ -29,6 +30,10 @@ def checkInt(n):
         int(n)
     except ValueError:
         raise customErrors.InvalidCharsError("Not a int")
+
+def checkModelExists(name):
+    if not os.path.isdir(os.path.join("models", name)):
+        raise customErrors.BadParamError("Model dir doesnt exists")
 
 def error(msg):
     raise customErrors.FatalError(msg)

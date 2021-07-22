@@ -20,8 +20,8 @@ def trainModel(name,pathCorpus, rawKW):
         utils.error("Invalid keywords" + " - " + str(e))
 
     kw = rawKW.split(",")
-    #if(models.trainModel(pathCorpus, name) != 0):
-    #    utils.error("Error while training model")
+    if(models.trainModel(pathCorpus, name) != 0):
+        utils.error("Error while training model")
 
     #descriptor de modelo
     return utils.modelDescriptor(name, kw)
@@ -30,6 +30,11 @@ def trainModel(name,pathCorpus, rawKW):
 def trainBot(jsonBot,model):
     bot = Bot.jsonConstructor(jsonBot)
     rawModel = utils.decModelDescriptor(model)
+    try:
+        utils.checkModelExists(rawModel["name"])
+    except customErrors.BadParamError as e:
+        utils.error("Error in model given: " + str(e))
+
     bot.learn(rawModel["name"],rawModel["keywords"])
     return bot.toJSON()
 
