@@ -102,3 +102,17 @@ def getRandomInt(a = 0,b=None):
         return int(random.random())
 
     return random.randint(a,b)
+
+def removeChars(text, *chars, char=" "):
+    for i in chars:
+        text = text.replace(chr(ord(i)),chr(ord(char)))
+    return text
+
+def literalQuotes(text):
+    out = ""
+    for c in text:
+        if(ord(c) == 34):
+            out += chr(92) + chr(34)
+        else:
+            out += c
+    return out

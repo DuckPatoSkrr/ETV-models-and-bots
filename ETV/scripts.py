@@ -1,7 +1,8 @@
 from misc import Bot, customErrors, utils
-import models
+from models import models
 import sys
 
+quotes = False
 
 def create(name):
     return Bot.BotInstance(name).toJSON()
@@ -31,25 +32,30 @@ def trainBot(jsonBot,model):
 
 def getResponse(jsonBot,context, filterParams):
     bot = Bot.jsonConstructor(jsonBot)
-    bot.generateResponse(context,filterParams)
+    return bot.generateResponse(context,filterParams)
 
 def _main():
     v = sys.argv
 
+    if("--quotes" in v):
+        global quotes
+        quotes = True
+        v.remove("--quotes")
+
     if(v[1] == "create"): #create name
         if(len(v) != 3):
             utils.error("Usage \"create name\"")
-        return create(v[2])
+        ret = create(v[2])
 
     elif(v[1]=="trainModel"): #trainModel name pathCorpus "keywords,..."
         if (len(v) != 5):
             utils.error("Usage \"trainModel name pathCorpus keywords,word,...\"")
-        return trainModel(v[2],v[3],v[4])
+        ret = trainModel(v[2],v[3],v[4])
 
     elif(v[1]=="trainBot"): #trainBot jsonBot modelDescriptor
         if (len(v) != 4):
             utils.error("Usage \"trainBot jsonBot modelDescriptor\"")
-        return trainBot(v[2],v[3])
+        ret = trainBot(v[2],v[3])
 
     elif (v[1] == "getResponse"): #getResponse jsonBot context filterParams
         if (len(v) < 4):
@@ -59,6 +65,10 @@ def _main():
     else:
         utils.error("Unknown command")
 
-    exit(0)
+    if(quotes):
+        ret = utils.literalQuotes(ret)
+
+    return ret
+
 
 _main()
