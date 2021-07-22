@@ -2,7 +2,10 @@ from misc import Bot, customErrors, utils
 from models import models
 import sys
 
-quotes = False
+asciiout = False
+asciiin = False
+outfile = False
+outpath = None
 
 def create(name):
     return Bot.BotInstance(name).toJSON()
@@ -17,8 +20,8 @@ def trainModel(name,pathCorpus, rawKW):
         utils.error("Invalid keywords" + " - " + str(e))
 
     kw = rawKW.split(",")
-    if(models.trainModel(pathCorpus, name) != 0):
-        utils.error("Error while training model")
+    #if(models.trainModel(pathCorpus, name) != 0):
+    #    utils.error("Error while training model")
 
     #descriptor de modelo
     return utils.modelDescriptor(name, kw)
@@ -36,11 +39,30 @@ def getResponse(jsonBot,context, filterParams):
 
 def _main():
     v = sys.argv
+    global asciiout
+    global asciiin
+    global outfile
+    global outpath
 
-    if("--quotes" in v):
-        global quotes
-        quotes = True
-        v.remove("--quotes")
+    if("--ascii-out" in v):
+        asciiout = True
+        v.remove("--ascii-out")
+
+    if ("--ascii-in" in v):
+        asciiin = True
+        v.remove("--ascii-in")
+
+    if("--outfile" in v):
+        outfile = True
+        idx = v.index("--outfile")
+        outpath = v[idx + 1]
+        try:
+            utils.checkFile(outpath)
+        except FileNotFoundError as e:
+            utils.error("Out file path not available : " + str(e))
+        v.pop(idx)
+        v.pop(idx)
+
 
     if(v[1] == "create"): #create name
         if(len(v) != 3):
@@ -55,18 +77,31 @@ def _main():
     elif(v[1]=="trainBot"): #trainBot jsonBot modelDescriptor
         if (len(v) != 4):
             utils.error("Usage \"trainBot jsonBot modelDescriptor\"")
-        ret = trainBot(v[2],v[3])
+        jsonBot = v[2]
+        jsonModel = v[3]
+        if(asciiin):
+            jsonBot = utils.asciiToText(v[2])
+            jsonModel = utils.asciiToText(v[3])
+        ret = trainBot(jsonBot,jsonModel)
 
     elif (v[1] == "getResponse"): #getResponse jsonBot context filterParams
         if (len(v) < 4):
             utils.error("Usage \"getResponse jsonBot \"context\" (filterParams, read filterParams file for more information)\"")
         filterParams = utils.filterParams(v, 4)
-        return getResponse(v[2],v[3],filterParams)
+        jsonBot = v[2]
+        if (asciiin):
+            jsonBot = utils.asciiToText(v[2])
+        return getResponse(jsonBot,v[3],filterParams)
     else:
         utils.error("Unknown command")
 
-    if(quotes):
-        ret = utils.literalQuotes(ret)
+    if(asciiout):
+        ret = utils.textToAscii(ret)
+
+    if(outfile):
+        with open(outpath, "w") as f:
+            f.write(ret)
+            exit(0)
 
     return ret
 

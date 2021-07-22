@@ -6,8 +6,8 @@ def checkFile(path): #checks if the file is available, throws exception otherwis
     try:
         t = open(path)
         t.close()
-    except FileNotFoundError:
-        raise FileNotFoundError("Path doesn't represent an available file")
+    except FileNotFoundError as e:
+        raise FileNotFoundError("Path doesn't represent an available file:" + str(e))
 
 def checkAlphanumeric(inpt, *extrachars):
     for c in inpt:
@@ -108,11 +108,17 @@ def removeChars(text, *chars, char=" "):
         text = text.replace(chr(ord(i)),chr(ord(char)))
     return text
 
-def literalQuotes(text):
+def textToAscii(text):
+    out =str(ord(text[0]))
+    c= 1
+    while c < len(text):
+        out += ' ' + str(ord(text[c]))
+        c+=1
+    return out
+
+def asciiToText(text):
     out = ""
-    for c in text:
-        if(ord(c) == 34):
-            out += chr(92) + chr(34)
-        else:
-            out += c
+    v = text.split(" ")
+    for c in v:
+        out += chr(int(c))
     return out
