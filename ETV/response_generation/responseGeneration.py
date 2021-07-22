@@ -82,6 +82,7 @@ def _processedText(input, nchars,positivityFactor, keywords): #filters the outpu
     output = _duple(input)
     output = _pipeFormat(output,nchars)
     output = _pipePositivity(output,positivityFactor)
+    output = _pipeKeywordCount(output, keywords)
     return _maxPoints(output)
 
 
@@ -95,8 +96,7 @@ def generateResponse(model,
     gpt2.load_gpt2(sess, run_name=model)
     textGenerated = gpt2.generate(sess, prefix=prefix, run_name=model,
                                   batch_size=number_of_responses, nsamples=number_of_responses,
-                                  return_as_list=True, length=default_max_words)
+                                  return_as_list=True, length=nchars)
     return _processedText(textGenerated,nchars, posFactor, keyWords)
-
 
 
