@@ -2,6 +2,18 @@ from misc import customErrors
 import json
 import random
 import os
+import gpt_2_simple as gpt2
+
+class FilterParams:
+    keywords =[]
+    posFactor = None
+    nchars = -1
+    number_of_responses = 10
+
+default_model = "124M"
+
+def cprint(text):
+    print(text)
 
 def checkFile(path): #checks if the file is available, throws exception otherwise
     try:
@@ -51,11 +63,7 @@ def decModelDescriptor(md): #devuelve diccionario con elementos
     return ret
 
 
-class FilterParams:
-    keywords =[]
-    posFactor = None
-    nchars = -1
-    number_of_responses = 10
+
 
 
 def filterParams(vec, pos): #devuelve objeto FilterParams
@@ -127,3 +135,10 @@ def asciiToText(text):
     for c in v:
         out += chr(int(c))
     return out
+
+def setupBaseModel(model = default_model):
+    if not os.path.isdir(os.path.join("models", model)):
+        cprint(f"Downloading {model} model...")
+        gpt2.download_gpt2(model_name=model)  # model is saved into current directory under /models/(model)/
+    else:
+        cprint(f'Model already installed, manually delete dir \"{model}\" if you want to reinstall this model')

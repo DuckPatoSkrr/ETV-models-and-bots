@@ -42,6 +42,9 @@ def getResponse(jsonBot,context, filterParams):
     bot = Bot.jsonConstructor(jsonBot)
     return bot.generateResponse(context,filterParams)
 
+def setupBaseModel():
+    utils.setupBaseModel()
+
 def _main():
     v = sys.argv
     global asciiout
@@ -97,6 +100,12 @@ def _main():
         if (asciiin):
             jsonBot = utils.asciiToText(v[2])
         return getResponse(jsonBot,v[3],filterParams)
+
+    elif(v[1] == "setupBaseModel"):
+        if(len(v) != 2):
+            utils.error("Usage \"getResponse jsonBot \"context\" (filterParams, read filterParams file for more information)\"")
+        setupBaseModel()
+        exit(0)
     else:
         utils.error("Unknown command")
 

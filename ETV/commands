@@ -2,6 +2,7 @@ create name
 trainModel name pathCorpus "keywords,..."
 trainBot "jsonBot" "modelDescriptor"
 getResponse "jsonBot" "context" filterParams
+setupBaseModel
 
 (options)
 --ascii-in              #All JSON inputs are ASCII
