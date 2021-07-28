@@ -10,17 +10,21 @@ outpath = None
 def create(name):
     return Bot.BotInstance(name).toJSON()
 
-def trainModel(name,pathCorpus, rawKW):
+
+def trainModel(name,pathCorpus, rawKW, numIterations):
+    if(numIterations is None):
+        numIterations = utils.default_num_iterations
     try:
         utils.checkFile(pathCorpus)
         utils.checkAlphanumeric(rawKW, ",")
+        utils.checkInt(numIterations)
     except FileNotFoundError as e:
         utils.error("Bad path" + " - " + str(e))
     except customErrors.InvalidCharsError as e:
-        utils.error("Invalid keywords" + " - " + str(e))
+        utils.error("Invalid param" + " - " + str(e))
 
     kw = rawKW.split(",")
-    if(models.trainModel(pathCorpus, name) != 0):
+    if(models.trainModel(pathCorpus, name, num_iterations=numIterations, nameOfModel=utils.default_model) != 0):
         utils.error("Error while training model")
 
     #descriptor de modelo
@@ -77,10 +81,13 @@ def _main():
             utils.error("Usage \"create name\"")
         ret = create(v[2])
 
-    elif(v[1]=="trainModel"): #trainModel name pathCorpus "keywords,..."
-        if (len(v) != 5):
+    elif(v[1]=="trainModel"): #trainModel name pathCorpus "keywords,..." (-n int)
+        if (len(v) < 5):
             utils.error("Usage \"trainModel name pathCorpus keywords,word,...\"")
-        ret = trainModel(v[2],v[3],v[4])
+        numIt = None
+        if("-n" in v):
+            numIt = v[v.index("-n") + 1]
+        ret = trainModel(v[2],v[3],v[4], numIt)
 
     elif(v[1]=="trainBot"): #trainBot jsonBot modelDescriptor
         if (len(v) != 4):

@@ -1,5 +1,5 @@
 create name
-trainModel name pathCorpus "keywords,..."
+trainModel name pathCorpus "keywords,..." (-n numIterations)
 trainBot "jsonBot" "modelDescriptor"
 getResponse "jsonBot" "context" filterParams
 setupBaseModel
