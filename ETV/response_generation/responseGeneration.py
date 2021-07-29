@@ -1,5 +1,8 @@
 import gpt_2_simple as gpt2
 from sentiment_analysis import sentimentAnalysis
+from abbreviations import abbr_list
+from abbreviations import enders_list
+from abbreviations import starters_list
 
 def _maxPoints(list):
     max = list[0]
@@ -26,6 +29,16 @@ def _pipePositivity(input, posFactor):
         outList.append((duple[0],duple[1] + res))
 
     return outList
+
+# formats text making it more informal the higher the slang factor is
+# changes done include: abbreviating expressions, adding emotes, more or less capital letters or copying/removing punctuation marks
+def _pipeSlang(text, slangFactor):
+    if(slangFactor is None):
+        return text
+
+    outText = text
+
+    return outText
 
 def _pipeFormat(input,nchars): #format text, this doesn't change the puntuation
     if(nchars == -1):
