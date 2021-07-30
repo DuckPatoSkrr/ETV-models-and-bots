@@ -1,5 +1,6 @@
 from misc import Bot, customErrors, utils
 from models import models
+from FilterParamsInference import Inferencer
 import sys
 
 asciiout = False
@@ -24,7 +25,7 @@ def trainModel(name,pathCorpus, rawKW, numIterations):
         utils.error("Invalid param" + " - " + str(e))
 
     kw = rawKW.split(",")
-    if(models.trainModel(pathCorpus, name, num_iterations=numIterations, nameOfModel=utils.default_model) != 0):
+    if(models.trainModel(pathCorpus, name, num_iterations=numIterations, _model_version=utils.default_model) != 0):
         utils.error("Error while training model")
 
     #descriptor de modelo
@@ -44,7 +45,10 @@ def trainBot(jsonBot,model):
 
 def getResponse(jsonBot,context, filterParams):
     bot = Bot.jsonConstructor(jsonBot)
-    return bot.generateResponse(context,filterParams)
+    inferedParams = Inferencer.inferParams(bot,"dummy") #TODO
+    finalParams = utils.fusionParams(filterParams,inferedParams)
+    finalParams = utils.filterParams(finalParams.split(" "), 0)
+    return bot.generateResponse(context,finalParams)
 
 def setupBaseModel():
     utils.setupBaseModel()

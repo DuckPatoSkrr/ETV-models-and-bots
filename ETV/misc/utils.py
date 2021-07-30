@@ -10,6 +10,26 @@ class FilterParams:
     nchars = -1
     number_of_responses = 10
 
+    def toString(self):
+        kw = ""
+        pf = ""
+        nchars = ""
+        if(len(self.keywords)):
+            kw = "-k "
+            for w in self.keywords:
+                kw +=w
+
+        if not (self.posFactor is None):
+            pf = f"-pf {self.posFactor}"
+
+        if (self.nchars != -1):
+            nchars = f"-nc {self.nchars}"
+
+        return f"{kw} {pf} {nchars}"
+
+
+
+
 default_model = "124M"
 default_num_iterations = 5
 
@@ -31,6 +51,8 @@ def checkAlphanumeric(inpt, *extrachars):
         if(not minuscula and not mayuscula and not number and (c not in extrachars)):
             raise customErrors.InvalidCharsError("Not alphanumeric or in extrachars")
 
+    return True
+
 def checkFloat(n):
     try:
         float(n)
@@ -48,6 +70,9 @@ def checkModelExists(name):
     if not os.path.isdir(os.path.join("models", name)):
         raise customErrors.BadParamError("Model dir doesnt exists")
 
+def uppercase(c):
+    return ord(c) >= ord('A') and ord(c) <= ord('Z')
+
 def error(msg):
     raise customErrors.FatalError(msg)
 
@@ -64,7 +89,15 @@ def decModelDescriptor(md): #devuelve diccionario con elementos
     return ret
 
 
+def fusionParams(p1,p2):
+    sp1 = p1.toString().split(" ")
+    sp2 = p2.toString().split(" ")
+    ret = ""
+    for c in sp2:
+        if(c[0] == '-') and not (c in sp1):
+            ret = f"{ret} {c} {sp2[sp2.index(c) + 1]}"
 
+    return ret
 
 
 def filterParams(vec, pos): #devuelve objeto FilterParams
