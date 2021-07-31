@@ -38,7 +38,7 @@ def inferParams(bot, user):
     prop = classifier.classify(user)
 
     ret.posFactor = _inferPositivity(bot,prop)
-    ret.keywords = _inferKeywords(bot,prop)
+    #ret.keywords = _inferKeywords(bot,prop) #TODO
 
 
 
