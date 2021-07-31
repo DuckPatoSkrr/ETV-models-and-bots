@@ -8,7 +8,7 @@ facts = "facts.pl"
 rules = "rules.pl"
 
 def _inferPositivity(bot, prop):
-    unified = WebSearch.request(prop.objct).header
+    unified = WebSearch.request(f"{prop.objct} wikipedia").header
     #bot likes or dislikes object
     if(unified in bot.likes):
         return 1
