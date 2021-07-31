@@ -1,3 +1,5 @@
+import random
+
 import gpt_2_simple as gpt2
 from sentiment_analysis import sentimentAnalysis
 from abbreviations import abbr_list
@@ -30,15 +32,53 @@ def _pipePositivity(input, posFactor):
 
     return outList
 
-# formats text making it more informal the higher the slang factor is
+# formats text making it more informal the higher the slang factor is (factor must be between 0 and 10)
 # changes done include: abbreviating expressions, adding emotes, more or less capital letters or copying/removing punctuation marks
-def _pipeSlang(text, slangFactor):
+def _pipeSlang(input, slangFactor):
     if(slangFactor is None):
-        return text
+        return input
 
-    outText = text
+    outList = []
+    addWordChance = slangFactor * 3 # max chance of 30% at factor 10
 
-    return outText
+    enders_total = 0
+    for ender in enders_list:
+        enders_total += enders_list[ender]
+
+    starters_total = 0
+    for starter in starters_list:
+        starters_total += starters_list[starter]
+
+    for duple in input:
+        text = duple[0]
+
+        # Try to replace
+        for abbr in abbr_list:
+            replaceChance = slangFactor * abbr_list[abbr][1]
+            if random.randint(0, 99) < replaceChance:
+                text.replace(abbr, abbr_list[abbr][0])
+
+        # Try to add
+        if random.randint(0, 99) < addWordChance:
+            # Start or end
+            if random.randint(0, 1) == 1: # Start
+                word_index = random.randint(1, starters_total)
+                for starter in starters_list:
+                    word_index -= starters_list[starter]
+                    if word_index <= 0:
+                        text = starter + ", " + text
+                        break
+            else: #end
+                word_index = random.randint(1, enders_total)
+                for ender in enders_list:
+                    word_index -= enders_list[ender]
+                    if word_index <= 0:
+                        text = text + " " + ender
+                        break
+
+        outList.append((text, duple[1]))
+
+    return outList
 
 def _pipeFormat(input,nchars): #format text, this doesn't change the puntuation
     if(nchars == -1):
