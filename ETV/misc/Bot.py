@@ -2,14 +2,18 @@ from misc import customErrors, utils
 from response_generation import responseGeneration
 import json
 from sentiment_analysis import sentimentAnalysis
+from FilterParamsInference import Inferencer
+
 
 def _punt(modelK, inputK):
     ret = 0
     for m in inputK:
-        if(m in modelK):
+        if (m in modelK):
             ret += 1
     return ret
-def _extractKWfromContext(context): #devuelve lista
+
+
+def _extractKWfromContext(context):  # devuelve lista
     classifier = sentimentAnalysis.Classifier()
     prop = classifier.classify(context)
     ret = []
@@ -17,58 +21,55 @@ def _extractKWfromContext(context): #devuelve lista
     ret = utils.copyList(prop.adjectives, ret)
     return ret
 
+
 class BotInstance:
 
-    #PRIVATE
+    # PRIVATE
 
-    def _getModelBasedOnMood(self, keyw):
-        maxn = 0
-        ret = None
-        for m in self.mymodelsnames:
-            points = _punt(self.modelKeywords[m], keyw)
-            if(points > maxn):
-                ret = m
-                maxn = points
-
-        if ret is None:
-            ret = self.mymodelsnames[utils.getRandomInt(b=len(self.mymodelsnames) - 1)]
-
-        return ret
+    def _getModelBasedOnContext(self, context):
+        pass #TODO
 
     name = "noname"
-    mymodelsnames = []
-    modelKeywords = {}
+    likes = []
+    dislikes = []
+    mymodels = []
 
-    #PUBLIC
+    # PUBLIC
 
-    def __init__(self, name, loadModels=[], modelKeywords={}):
+    def __init__(self, name, loadModels=[], likes=[], dislikes=[]):
         self.name = name
-        self.mymodelsnames = loadModels
-        self.modelKeywords = modelKeywords
+        self.mymodels = loadModels
+        self.likes = likes
+        self.dislikes = dislikes
 
     def generateResponse(self, context, filterParams,
                          prefix=None):
-        modelKeywords = _extractKWfromContext(context)
-        model = self._getModelBasedOnMood(modelKeywords)
-        return responseGeneration.generateResponse(model, filterParams.posFactor, filterParams.keywords, filterParams.nchars,
-                                                   filterParams.number_of_responses,
+
+        inferedParams = Inferencer.inferParams(self, context)
+        finalParams = utils.fusionParams(filterParams, inferedParams)
+        finalParams = utils.filterParams(finalParams.split(" "), 0)
+
+        model = self._getModelBasedOnContext(context)
+        return responseGeneration.generateResponse(model, finalParams.posFactor, finalParams.keywords,
+                                                   finalParams.nchars,
+                                                   finalParams.number_of_responses,
                                                    prefix)
 
-
-    def learn(self, nameOfModel,keywords):
-        self.mymodelsnames.append(nameOfModel)
-        self.modelKeywords[nameOfModel] = keywords
+    def learn(self, model):
+        self.mymodels.append(model)
 
     def toJSON(self):
-        jsonFile = {"name":self.name,"mymodelsnames":self.mymodelsnames,"modelKeywords":self.modelKeywords}
+        jsonFile = {"name": self.name, "mymodelsnames": self.mymodels, "likes": self.likes, "dislikes": self.dislikes}
         return json.dumps(jsonFile)
+
 
 def jsonConstructor(inpt):
     try:
         out = json.loads(inpt)
         name = out["name"]
-        modelsList = out["mymodelsnames"]
-        modelKw = out["modelKeywords"]
+        modelsList = out["mymodels"]
+        likes = out["likes"]
+        dislikes = out["dislikes"]
     except Exception as e:
         raise customErrors.BadParamError("Bad JSON constructor: " + str(e))
-    return BotInstance(name,modelsList,modelKw)
+    return BotInstance(name, modelsList, likes, dislikes)

@@ -1,5 +1,5 @@
 
-show_r(_,_,0,-1).
+show_r(_,_,0,-1):-!.
 show_r(X,Y,P,_):-relacion(Y,X,P) | relacion(X,Y,P). %relacion directa
 show_r(X,Y,PF,Cont):-NCont is Cont - 1,show_r(X,Z,P1,NCont),show_r(Y,Z,P2,NCont), puntuacion(PF,P1,P2). %relacion compleja
 

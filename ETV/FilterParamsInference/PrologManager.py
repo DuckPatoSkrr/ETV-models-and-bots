@@ -21,6 +21,13 @@ def _getVars(s):
 
     return ret
 
+def formatText(inpt):
+    ret = inpt.replace(" ","_")
+    ret = ret.replace(".","_")
+    ret = ret.replace(",", "_")
+    ret = ret.str.lower()
+    return ret
+
 class Manager():
     _prolog = None
 
@@ -36,7 +43,7 @@ class Manager():
 
 
     def consult(self, query, num_results = 1):
-        ret = []
+        ret = {}
         variables = _getVars(query)
 
         i = 0
@@ -45,7 +52,7 @@ class Manager():
                 break
             i+=1
             for v in variables:
-                ret.append(f"{v}={s[v]}")
+                ret[v] = s[v]
 
         return ret
 

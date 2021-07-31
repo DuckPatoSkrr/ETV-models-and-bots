@@ -1,6 +1,7 @@
 from misc import customErrors
 import json
 import random
+import WebSearch
 import os
 import gpt_2_simple as gpt2
 
@@ -76,9 +77,6 @@ def uppercase(c):
 def error(msg):
     raise customErrors.FatalError(msg)
 
-def modelDescriptor(name,kw):
-    jsonFile = {"name": name, "keywords": kw}
-    return json.dumps(jsonFile)
 
 def decModelDescriptor(md): #devuelve diccionario con elementos
     ret = {}
@@ -177,3 +175,4 @@ def setupBaseModel(model = default_model):
         cprint(f"model is saved into current directory under /models/{model}/") # model is saved into current directory under /models/(model)/
     else:
         cprint(f'Model already installed, manually delete dir \"{model}\" if you want to reinstall this model')
+

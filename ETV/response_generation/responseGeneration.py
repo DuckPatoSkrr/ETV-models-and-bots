@@ -93,8 +93,8 @@ def generateResponse(model,
                      number_of_responses,
                      prefix = None):
     sess = gpt2.start_tf_sess()
-    gpt2.load_gpt2(sess, run_name=model)
-    textGenerated = gpt2.generate(sess, prefix=prefix, run_name=model,
+    gpt2.load_gpt2(sess, run_name=model.name)
+    textGenerated = gpt2.generate(sess, prefix=prefix, run_name=model.name,
                                   batch_size=number_of_responses, nsamples=number_of_responses,
                                   return_as_list=True, length=nchars)
     return _processedText(textGenerated,nchars, posFactor, keyWords)

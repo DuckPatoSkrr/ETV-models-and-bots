@@ -25,30 +25,21 @@ def trainModel(name,pathCorpus, rawKW, numIterations):
         utils.error("Invalid param" + " - " + str(e))
 
     kw = rawKW.split(",")
-    if(models.trainModel(pathCorpus, name, num_iterations=numIterations, _model_version=utils.default_model) != 0):
-        utils.error("Error while training model")
 
     #descriptor de modelo
-    return utils.modelDescriptor(name, kw)
+    return models.Model(name, kw,pathCorpus,numIterations).toJSON()
 
 
 def trainBot(jsonBot,model):
     bot = Bot.jsonConstructor(jsonBot)
-    rawModel = utils.decModelDescriptor(model)
-    try:
-        utils.checkModelExists(rawModel["name"])
-    except customErrors.BadParamError as e:
-        utils.error("Error in model given: " + str(e))
+    model = models.jsonConstructor(model)
 
-    bot.learn(rawModel["name"],rawModel["keywords"])
+    bot.learn(model)
     return bot.toJSON()
 
 def getResponse(jsonBot,context, filterParams):
     bot = Bot.jsonConstructor(jsonBot)
-    inferedParams = Inferencer.inferParams(bot,"dummy") #TODO
-    finalParams = utils.fusionParams(filterParams,inferedParams)
-    finalParams = utils.filterParams(finalParams.split(" "), 0)
-    return bot.generateResponse(context,finalParams)
+    return bot.generateResponse(context,filterParams)
 
 def setupBaseModel():
     utils.setupBaseModel()
