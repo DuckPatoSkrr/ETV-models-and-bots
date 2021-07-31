@@ -9,6 +9,10 @@ default_model_version = "124M"
 
 # PRIVATE
 
+def _generateKeywords(corpusPath,n=10):
+    return []
+
+
 #PUBLIC
 
 def jsonConstructor(jsonin):
@@ -24,11 +28,15 @@ class Model:
     name = ""
     keywords = []
 
-    def __init__(self,name, keywords,corpusPath=None,num_iterations=0):
+    def __init__(self,name, keywords=[],corpusPath=None,num_iterations=0):
         if not (corpusPath is None):
             trainModel(corpusPath,name,num_iterations)
         self.name = name
-        self.keywords = keywords
+
+        if len(keywords) != 0:
+            self.keywords = keywords
+        elif not (corpusPath is None):
+            self.keywords = _generateKeywords(corpusPath)
 
 
     def toJSON(self):

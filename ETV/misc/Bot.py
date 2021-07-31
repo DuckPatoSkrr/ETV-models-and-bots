@@ -26,8 +26,14 @@ class BotInstance:
 
     # PRIVATE
 
-    def _getModelBasedOnContext(self, context):
-        pass #TODO
+    def _getModelBasedOnContext(self, context): #TODO igual esto se puede hacer mejor
+        maxp = -1
+        for m in self.mymodels:
+            p = _punt(m.keywords, context)
+            if(p > maxp):
+                ret = m
+                maxp = p
+        return ret
 
     name = "noname"
     likes = []
