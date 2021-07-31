@@ -1,13 +1,48 @@
 from misc import customErrors
 import json
 import random
+import WebSearch
+import os
+import gpt_2_simple as gpt2
+
+class FilterParams:
+    keywords =[]
+    posFactor = None
+    nchars = -1
+    number_of_responses = 10
+
+    def toString(self):
+        kw = ""
+        pf = ""
+        nchars = ""
+        if(len(self.keywords)):
+            kw = "-k "
+            for w in self.keywords:
+                kw +=w
+
+        if not (self.posFactor is None):
+            pf = f"-pf {self.posFactor}"
+
+        if (self.nchars != -1):
+            nchars = f"-nc {self.nchars}"
+
+        return f"{kw} {pf} {nchars}"
+
+
+
+
+default_model = "124M"
+default_num_iterations = 5
+
+def cprint(text):
+    print(text)
 
 def checkFile(path): #checks if the file is available, throws exception otherwise
     try:
         t = open(path)
         t.close()
-    except FileNotFoundError:
-        raise FileNotFoundError("Path doesn't represent an available file")
+    except FileNotFoundError as e:
+        raise FileNotFoundError("Path doesn't represent an available file:" + str(e))
 
 def checkAlphanumeric(inpt, *extrachars):
     for c in inpt:
@@ -16,6 +51,8 @@ def checkAlphanumeric(inpt, *extrachars):
         number = not mayuscula and (ord(c)>= ord('0') and ord(c) <= ord('9'))
         if(not minuscula and not mayuscula and not number and (c not in extrachars)):
             raise customErrors.InvalidCharsError("Not alphanumeric or in extrachars")
+
+    return True
 
 def checkFloat(n):
     try:
@@ -30,12 +67,16 @@ def checkInt(n):
     except ValueError:
         raise customErrors.InvalidCharsError("Not a int")
 
+def checkModelExists(name):
+    if not os.path.isdir(os.path.join("models", name)):
+        raise customErrors.BadParamError("Model dir doesnt exists")
+
+def uppercase(c):
+    return ord(c) >= ord('A') and ord(c) <= ord('Z')
+
 def error(msg):
     raise customErrors.FatalError(msg)
 
-def modelDescriptor(name,kw):
-    jsonFile = {"name": name, "keywords": kw}
-    return json.dumps(jsonFile)
 
 def decModelDescriptor(md): #devuelve diccionario con elementos
     ret = {}
@@ -46,11 +87,15 @@ def decModelDescriptor(md): #devuelve diccionario con elementos
     return ret
 
 
-class FilterParams:
-    keywords =[]
-    posFactor = None
-    nchars = -1
-    number_of_responses = 10
+def fusionParams(p1,p2):
+    sp1 = p1.toString().split(" ")
+    sp2 = p2.toString().split(" ")
+    ret = ""
+    for c in sp2:
+        if(c[0] == '-') and not (c in sp1):
+            ret = f"{ret} {c} {sp2[sp2.index(c) + 1]}"
+
+    return ret
 
 
 def filterParams(vec, pos): #devuelve objeto FilterParams
@@ -102,3 +147,32 @@ def getRandomInt(a = 0,b=None):
         return int(random.random())
 
     return random.randint(a,b)
+
+def removeChars(text, *chars, char=" "):
+    for i in chars:
+        text = text.replace(chr(ord(i)),chr(ord(char)))
+    return text
+
+def textToAscii(text):
+    out =str(ord(text[0]))
+    c= 1
+    while c < len(text):
+        out += ' ' + str(ord(text[c]))
+        c+=1
+    return out
+
+def asciiToText(text):
+    out = ""
+    v = text.split(" ")
+    for c in v:
+        out += chr(int(c))
+    return out
+
+def setupBaseModel(model = default_model):
+    if not os.path.isdir(os.path.join("models", model)):
+        cprint(f"Downloading {model} model...")
+        gpt2.download_gpt2(model_name=model)
+        cprint(f"model is saved into current directory under /models/{model}/") # model is saved into current directory under /models/(model)/
+    else:
+        cprint(f'Model already installed, manually delete dir \"{model}\" if you want to reinstall this model')
+

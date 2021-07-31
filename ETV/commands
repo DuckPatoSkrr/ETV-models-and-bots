@@ -1,4 +1,10 @@
 create name
-trainModel name pathCorpus "keywords,..."
-trainBot jsonBot modelDescriptor
-getResponse jsonBot context filterParams
+trainModel name pathCorpus "keywords,..." (-n numIterations)
+trainBot "jsonBot" "modelDescriptor"
+getResponse "jsonBot" "context" filterParams
+setupBaseModel
+
+(options)
+--ascii-in              #All JSON inputs are ASCII
+--ascii-out             #All JSON returns are ASCII
+--outfile "filepath"    #Writes the return value in filepath (must exist)
