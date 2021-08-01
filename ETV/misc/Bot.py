@@ -35,15 +35,17 @@ class BotInstance:
                 maxp = p
         return ret
 
-    name = "noname"
+    age = None
+    level_of_education = None
     likes = []
     dislikes = []
     mymodels = []
 
     # PUBLIC
 
-    def __init__(self, name, loadModels=[], likes=[], dislikes=[]):
-        self.name = name
+    def __init__(self, age, level_of_education, loadModels=[], likes=[], dislikes=[]):
+        self.age = age
+        self.level_of_education = level_of_education
         self.mymodels = loadModels
         self.likes = likes
         self.dislikes = dislikes
@@ -61,21 +63,22 @@ class BotInstance:
                                                    finalParams.number_of_responses,
                                                    prefix)
 
-    def learn(self, model):
+    def learn(self, model): #TODO
         self.mymodels.append(model)
 
     def toJSON(self):
-        jsonFile = {"name": self.name, "mymodelsnames": self.mymodels, "likes": self.likes, "dislikes": self.dislikes}
+        jsonFile = {"age": self.age, "level_of_education":self.level_of_education, "mymodelsnames": self.mymodels, "likes": self.likes, "dislikes": self.dislikes}
         return json.dumps(jsonFile)
 
 
 def jsonConstructor(inpt):
     try:
         out = json.loads(inpt)
-        name = out["name"]
+        age = out["age"]
+        level_of_education = out["level_of_education"]
         modelsList = out["mymodels"]
         likes = out["likes"]
         dislikes = out["dislikes"]
     except Exception as e:
         raise customErrors.BadParamError("Bad JSON constructor: " + str(e))
-    return BotInstance(name, modelsList, likes, dislikes)
+    return BotInstance(age,level_of_education, modelsList, likes, dislikes)

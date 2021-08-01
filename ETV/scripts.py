@@ -8,33 +8,30 @@ asciiin = False
 outfile = False
 outpath = None
 
-def create(name):
-    return Bot.BotInstance(name).toJSON()
+def create(age,level_of_education,likes,dislikes):
+    return Bot.BotInstance(age,level_of_education,likes=likes,dislikes=dislikes).toJSON() #TODO
 
 
-def trainModel(name,pathCorpus, rawKW, numIterations):
+def trainModel(name,pathCorpus, mdl, numIterations):
     if(numIterations is None):
         numIterations = utils.default_num_iterations
     try:
         utils.checkFile(pathCorpus)
-        utils.checkAlphanumeric(rawKW, ",")
         utils.checkInt(numIterations)
     except FileNotFoundError as e:
         utils.error("Bad path" + " - " + str(e))
     except customErrors.InvalidCharsError as e:
         utils.error("Invalid param" + " - " + str(e))
 
-    kw = rawKW.split(",")
-
+    ret = models.appendModelDescriptorList(mdl, models.Model(name, pathCorpus,numIterations))
     #descriptor de modelo
-    return models.Model(name, kw,pathCorpus,numIterations).toJSON()
+    return ret
 
 
-def trainBot(jsonBot,model):
+def trainBot(jsonBot,modelDescriptorList):
     bot = Bot.jsonConstructor(jsonBot)
-    model = models.jsonConstructor(model)
-
-    bot.learn(model)
+    modelList = models.getModelDescriptorListObj(modelDescriptorList)
+    bot.learn(modelList)
     return bot.toJSON()
 
 def getResponse(jsonBot,context, filterParams):
@@ -71,20 +68,20 @@ def _main():
         v.pop(idx)
 
 
-    if(v[1] == "create"): #create name
-        if(len(v) != 3):
-            utils.error("Usage \"create name\"")
+    if(v[1] == "create"): #create age level_of_education "likes" "dislikes"
+        if(len(v) != 6):
+            utils.error("Usage \"create age level_of_education \"likes\" \"dislikes\" \"")
         ret = create(v[2])
 
     elif(v[1]=="trainModel"): #trainModel name pathCorpus "keywords,..." (-n int)
         if (len(v) < 5):
-            utils.error("Usage \"trainModel name pathCorpus keywords,word,...\"")
+            utils.error("Usage \"trainModel name pathCorpus \"modelDescriptorList\" (-n numIterations)\"")
         numIt = None
         if("-n" in v):
             numIt = v[v.index("-n") + 1]
         ret = trainModel(v[2],v[3],v[4], numIt)
 
-    elif(v[1]=="trainBot"): #trainBot jsonBot modelDescriptor
+    elif(v[1]=="trainBot"): #trainBot jsonBot modelDescriptorList
         if (len(v) != 4):
             utils.error("Usage \"trainBot jsonBot modelDescriptor\"")
         jsonBot = v[2]

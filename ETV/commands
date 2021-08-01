@@ -1,6 +1,6 @@
-create name
-trainModel name pathCorpus "keywords,..." (-n numIterations)
-trainBot "jsonBot" "modelDescriptor"
+create age level_of_education "likes" "dislikes"
+trainModel name pathCorpus "modelDescriptorList" (-n numIterations)
+trainBot "jsonBot" "modelDescriptorList"
 getResponse "jsonBot" "context" filterParams
 setupBaseModel
 

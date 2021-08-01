@@ -15,6 +15,22 @@ def _generateKeywords(corpusPath,n=10):
 
 #PUBLIC
 
+def appendModelDescriptorList(mdl, model):
+    try:
+        ret = json.loads(mdl)
+    except Exception:
+        pass
+
+    ret["list"].append(model)
+    return json.dumps(ret)
+
+def getModelDescriptorListObj(mdl):
+    return json.loads(mdl)
+
+def modelDescriptorListToJSON(mdl):
+    jsonFile = {"list":mdl}
+    return json.dumps(jsonFile)
+
 def jsonConstructor(jsonin):
     try:
         out = json.loads(jsonin)
@@ -27,8 +43,9 @@ def jsonConstructor(jsonin):
 class Model:
     name = ""
     keywords = []
+    path = ""
 
-    def __init__(self,name, keywords=[],corpusPath=None,num_iterations=0):
+    def __init__(self,name,corpusPath=None,num_iterations=0,keywords=[],):
         if not (corpusPath is None):
             trainModel(corpusPath,name,num_iterations)
         self.name = name
@@ -37,16 +54,17 @@ class Model:
             self.keywords = keywords
         elif not (corpusPath is None):
             self.keywords = _generateKeywords(corpusPath)
+            self.path = corpusPath
 
 
     def toJSON(self):
-        jsonFile = {"name": self.name, "keywords": self.keywords}
+        jsonFile = {"name": self.name, "keywords": self.keywords, "path":self.path}
         return json.dumps(jsonFile)
 
 #corpus must be a txt
 def trainModel(corpusPath, nameOfModel, num_iterations = 5, _model_version = default_model_version): #124M o 355M
     if not os.path.isdir(os.path.join(models_dir, _model_version)):
-        utils.error("Model introduced does not exist")
+        utils.error("Base model introduced does not exist in specified dir")
 
     utils.checkFile(corpusPath)
 
