@@ -3,15 +3,23 @@ import gpt_2_simple as gpt2
 from misc import utils
 import json
 from misc import customErrors
-
+from misc.wordCounter import wordCounter
 models_dir = "models"
 default_model_version = "124M"
 
 # PRIVATE
 
 def _generateKeywords(corpusPath,n=10):
-    return []
+    ret =[]
+    name = corpusPath.split("/")[len(corpusPath.split("/")) - 1]
+    os.system(f"copy {corpusPath} ./misc/wordCounter/{name}")
+    wordCounter.counter(corpusPath, f"{name}out.txt", n)
 
+    with open(f"{name}out.txt") as f:
+        for line in f:
+            ret.append(line)
+
+    return ret
 
 #PUBLIC
 
