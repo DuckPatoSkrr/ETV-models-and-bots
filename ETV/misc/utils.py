@@ -1,7 +1,6 @@
 from misc import customErrors
 import json
 import random
-import WebSearch
 import os
 import gpt_2_simple as gpt2
 

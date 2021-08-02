@@ -1,6 +1,5 @@
 from misc import Bot, customErrors, utils
 from models import models
-from FilterParamsInference import Inferencer
 import sys
 
 asciiout = False
@@ -9,7 +8,17 @@ outfile = False
 outpath = None
 
 def create(age,level_of_education,likes,dislikes):
-    return Bot.BotInstance(age,level_of_education,likes=likes,dislikes=dislikes).toJSON() #TODO
+    try:
+        utils.checkInt(age)
+        utils.checkInt(level_of_education)
+        utils.checkAlphanumeric(likes,',')
+        utils.checkAlphanumeric(dislikes, ',')
+    except customErrors.InvalidCharsError as e:
+        utils.error(f"Error while creating bot, bad param: {str(e)}")
+    splikes = likes.split(",")
+    spdislikes = dislikes.split(",")
+
+    return Bot.BotInstance(age,level_of_education,likes=splikes,dislikes=spdislikes).toJSON()
 
 
 def trainModel(name,pathCorpus, mdl, numIterations):
@@ -71,7 +80,7 @@ def _main():
     if(v[1] == "create"): #create age level_of_education "likes" "dislikes"
         if(len(v) != 6):
             utils.error("Usage \"create age level_of_education \"likes\" \"dislikes\" \"")
-        ret = create(v[2])
+        ret = create(v[2],v[3],v[4],v[5])
 
     elif(v[1]=="trainModel"): #trainModel name pathCorpus "keywords,..." (-n int)
         if (len(v) < 5):
@@ -83,7 +92,7 @@ def _main():
 
     elif(v[1]=="trainBot"): #trainBot jsonBot modelDescriptorList
         if (len(v) != 4):
-            utils.error("Usage \"trainBot jsonBot modelDescriptor\"")
+            utils.error("Usage \"trainBot jsonBot modelDescriptorList\"")
         jsonBot = v[2]
         jsonModel = v[3]
         if(asciiin):
@@ -114,7 +123,7 @@ def _main():
     if(outfile):
         with open(outpath, "w") as f:
             f.write(ret)
-            exit(0)
+        exit(0)
 
     return ret
 

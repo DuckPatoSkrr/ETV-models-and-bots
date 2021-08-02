@@ -3,7 +3,9 @@ from response_generation import responseGeneration
 import json
 from sentiment_analysis import sentimentAnalysis
 from FilterParamsInference import Inferencer
+from models import models
 
+learn_threshold = 0
 
 def _punt(modelK, inputK):
     ret = 0
@@ -21,6 +23,9 @@ def _extractKWfromContext(context):  # devuelve lista
     ret = utils.copyList(prop.adjectives, ret)
     return ret
 
+def _relation(likes, word):
+    return 0
+
 
 class BotInstance:
 
@@ -34,6 +39,15 @@ class BotInstance:
                 ret = m
                 maxp = p
         return ret
+
+    def _modelFits(self,model):
+        punt = 0
+        for kw in model.keywords:
+            punt += _relation(self.likes,kw)
+
+        return punt >= learn_threshold
+
+
 
     age = None
     level_of_education = None
@@ -63,8 +77,11 @@ class BotInstance:
                                                    finalParams.number_of_responses,
                                                    prefix)
 
-    def learn(self, model): #TODO
-        self.mymodels.append(model)
+    def learn(self, modelList):
+        for m in modelList:
+            model = models.jsonConstructor(m)
+            if(self._modelFits(model)):
+                self.mymodels.append(model)
 
     def toJSON(self):
         jsonFile = {"age": self.age, "level_of_education":self.level_of_education, "mymodelsnames": self.mymodels, "likes": self.likes, "dislikes": self.dislikes}

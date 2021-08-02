@@ -4,6 +4,7 @@ from misc import utils
 import json
 from misc import customErrors
 from misc.wordCounter import wordCounter
+from shutil import copyfile
 models_dir = "models"
 default_model_version = "124M"
 
@@ -12,28 +13,33 @@ default_model_version = "124M"
 def _generateKeywords(corpusPath,n=10):
     ret =[]
     name = corpusPath.split("/")[len(corpusPath.split("/")) - 1]
-    os.system(f"copy {corpusPath} ./misc/wordCounter/{name}")
-    wordCounter.counter(corpusPath, f"{name}out.txt", n)
+    nameout = f"{name}out"
+    copyfile(corpusPath, f"./misc/wordCounter/{name}")
+    utils.cprint("Extracting keywords from corpus...")
+    wordCounter.counter(name, nameout, n)
 
-    with open(f"{name}out.txt") as f:
+
+    with open(f"./misc/wordCounter/{nameout}") as f:
         for line in f:
-            ret.append(line)
+            ret.append(line.rstrip("\n"))
+
+    os.remove(f"./misc/wordCounter/{name}")
+    os.remove(f"./misc/wordCounter/{nameout}")
 
     return ret
 
 #PUBLIC
 
 def appendModelDescriptorList(mdl, model):
-    try:
-        ret = json.loads(mdl)
-    except Exception:
-        pass
-
-    ret["list"].append(model)
-    return json.dumps(ret)
+    mdl.append(model.toJSON())
+    return mdl
 
 def getModelDescriptorListObj(mdl):
-    return json.loads(mdl)
+    try:
+        ret = json.loads(mdl)["list"]
+    except json.JSONDecodeError:
+        ret = []
+    return ret
 
 def modelDescriptorListToJSON(mdl):
     jsonFile = {"list":mdl}
@@ -80,6 +86,3 @@ def trainModel(corpusPath, nameOfModel, num_iterations = 5, _model_version = def
     gpt2.finetune(sess, corpusPath,
                   model_name=_model_version, steps=num_iterations, run_name=nameOfModel,
                   restore_from='fresh', multi_gpu=False,)  # steps is max number of training step
-
-
-

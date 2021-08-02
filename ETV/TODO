@@ -1,6 +1,9 @@
-igual se puede hacer mejor lo de elegir modelo segun contexto
-hay que pensar como sacar las keywords de un modelo
 hay que hacer la inferencia de keywords
-learn del bot
-parseo de parametros en create
-terminar generate keywords
+hacer la funcion _relation del bot
+
+
+tokenizacion del wordcounter
+igual se puede hacer mejor lo de elegir modelo segun contexto
+
+
+ajustar learn threshold en bot
