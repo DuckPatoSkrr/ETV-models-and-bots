@@ -1,6 +1,7 @@
 hay que hacer la inferencia de keywords
-hacer la funcion _relation del bot
-
+añadir unificacion y formateo a todo
+añadir relation con dislikes
+arreglar return del consuultor de prolog (mal para multiples respuestas)
 
 tokenizacion del wordcounter
 igual se puede hacer mejor lo de elegir modelo segun contexto

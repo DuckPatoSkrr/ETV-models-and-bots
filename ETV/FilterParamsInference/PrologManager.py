@@ -2,6 +2,9 @@ from pyswip import Prolog
 from misc import utils
 from misc import customErrors
 
+default_facts = "facts.pl"
+default_rules = "rules.pl"
+
 def _getVars(s):
     i = 0
     ret = []
@@ -31,7 +34,7 @@ def formatText(inpt):
 class Manager():
     _prolog = None
 
-    def __init__(self,rules = None, facts = None):
+    def __init__(self,rules = default_rules, facts = default_facts):
         self._prolog = Prolog()
         if not (rules is None):
             utils.checkFile(rules)

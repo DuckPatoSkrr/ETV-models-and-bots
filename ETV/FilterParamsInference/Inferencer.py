@@ -32,13 +32,15 @@ def _inferPositivity(bot, prop):
 
     return (-1 ** int(dislikes))*maxv
 
+def _inferKeywords(bot,prop,n = 50):
+    ret = []
+    #TODO
+    return ret
+
 def inferParams(bot, user):
     ret = utils.FilterParams()
     classifier = sentimentAnalysis.Classifier()
     prop = classifier.classify(user)
 
     ret.posFactor = _inferPositivity(bot,prop)
-    #ret.keywords = _inferKeywords(bot,prop) #TODO
-
-
-
+    ret.keywords = _inferKeywords(bot,prop)

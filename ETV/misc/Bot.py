@@ -2,7 +2,7 @@ from misc import customErrors, utils
 from response_generation import responseGeneration
 import json
 from sentiment_analysis import sentimentAnalysis
-from FilterParamsInference import Inferencer
+from FilterParamsInference import Inferencer,PrologManager
 from models import models
 
 learn_threshold = 0
@@ -24,7 +24,12 @@ def _extractKWfromContext(context):  # devuelve lista
     return ret
 
 def _relation(likes, word):
-    return 0
+    ret = 0
+    man = PrologManager.Manager()
+    for i in likes:
+        res = man.consult(f"show_r({i},{word},P)")
+        ret += abs(res["P"])
+    return ret
 
 
 class BotInstance:
