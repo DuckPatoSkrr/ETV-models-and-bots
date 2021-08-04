@@ -59,6 +59,8 @@ def _main():
     global outfile
     global outpath
 
+    print(v)
+
     if("--ascii-out" in v):
         asciiout = True
         v.remove("--ascii-out")
