@@ -2,13 +2,28 @@ from misc import Bot
 from misc import utils
 from sentiment_analysis import sentimentAnalysis
 from misc import WebSearch
-import PrologManager
+from FilterParamsInference import PrologManager
 
-facts = "facts.pl"
-rules = "rules.pl"
+
 
 def _inferPositivity(bot, prop):
-    unified = WebSearch.request(f"{prop.objct} wikipedia").header
+    for i in prop:
+        if i.objct != "":
+            finalObj = i.objct
+            break
+    for i in prop:
+        if i.pnouns:
+            finalObj = i.pnouns[0]
+            break
+    for i in prop:
+        if i.nouns:
+            finalObj = i.nouns[0]
+            break
+
+    unified = WebSearch.request(f"{finalObj} wikipedia").header
+    if unified == "":
+        unified = finalObj
+    unified = PrologManager.formatText(unified)
     #bot likes or dislikes object
     if(unified in bot.likes):
         return 1
@@ -16,7 +31,7 @@ def _inferPositivity(bot, prop):
         return -1
 
     #bot has relational likes or dislikes with object
-    man = PrologManager.Manager(facts=facts,rules=rules)
+    man = PrologManager.Manager(facts=PrologManager.default_facts,rules=PrologManager.default_rules)
     maxv = 0
     dislikes = False
     for x in bot.likes:
@@ -44,3 +59,5 @@ def inferParams(bot, user):
 
     ret.posFactor = _inferPositivity(bot,prop)
     ret.keywords = _inferKeywords(bot,prop)
+
+    return ret

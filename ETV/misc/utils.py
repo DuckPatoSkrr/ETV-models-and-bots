@@ -14,18 +14,30 @@ class FilterParams:
         kw = ""
         pf = ""
         nchars = ""
-        if(len(self.keywords)):
-            kw = "-k "
-            for w in self.keywords:
-                kw +=w
+        nor = ""
+        ret = ""
 
         if not (self.posFactor is None):
             pf = f"-pf {self.posFactor}"
+            ret = f"{pf} {ret}"
 
         if (self.nchars != -1):
             nchars = f"-nc {self.nchars}"
+            ret = f"{nchars} {ret}"
 
-        return f"{kw} {pf} {nchars}"
+        nor = f"-nor {self.number_of_responses}"
+        ret = f"{nor} {ret}"
+
+        if (len(self.keywords)):
+            kw = "-k "
+            for w in range(len(self.keywords) - 1):
+                kw += str(self.keywords[w]) + ','
+            kw += str(self.keywords[len(self.keywords) - 1])
+            ret = f"{kw} {ret}"
+
+        return ret.rstrip()
+
+
 
 
 
@@ -89,9 +101,9 @@ def decModelDescriptor(md): #devuelve diccionario con elementos
 def fusionParams(p1,p2):
     sp1 = p1.toString().split(" ")
     sp2 = p2.toString().split(" ")
-    ret = ""
+    ret = p1.toString()
     for c in sp2:
-        if(c[0] == '-') and not (c in sp1):
+        if c and (c[0] == '-') and not (c in sp1):
             ret = f"{ret} {c} {sp2[sp2.index(c) + 1]}"
 
     return ret

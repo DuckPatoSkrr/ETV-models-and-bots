@@ -23,12 +23,15 @@ class Classifier:
             sentiment_subjectivity = doc._.subjectivity
             verbs = []
             pnouns = []
+            nouns = []
             adjectives = []
             subject = ""
             objct = ""
             for i in doc:
                 if i.pos_ == "PROPN":
                     pnouns.append(str(i))
+                if i.pos_ == "NOUN":
+                    nouns.append(str(i))
                 if i.pos_ == "ADJ":
                     adjectives.append(str(i))
                 if i.pos_ == "VERB":
@@ -48,7 +51,7 @@ class Classifier:
             if hasCompound:
                 objct = f"{compobj} {objct}"
 
-            prop = Properties.Properties(sentiment_polarity, sentiment_assessments, sentiment_subjectivity, pnouns, adjectives,verbs,subject,objct)
+            prop = Properties.Properties(sentiment_polarity, sentiment_assessments, sentiment_subjectivity, pnouns, nouns, adjectives,verbs,subject,objct)
 
             i = 0
             while(i < len(ret) and abs(ret[i].sentiment_polarity) > abs(prop.sentiment_polarity)):

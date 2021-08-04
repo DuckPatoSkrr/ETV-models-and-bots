@@ -1,6 +1,8 @@
 hay que hacer la inferencia de keywords
 añadir unificacion y formateo a todo (creo que ya esta pero revisar)
 arreglar return del consuultor de prolog (mal para multiples respuestas)
+traducir likes a unified
+añadir error untrained bot
 
 igual se puede hacer mejor lo de elegir modelo segun contexto
 

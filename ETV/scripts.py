@@ -24,6 +24,7 @@ def create(age,level_of_education,likes,dislikes):
 def trainModel(name,pathCorpus, mdl, numIterations):
     if(numIterations is None):
         numIterations = utils.default_num_iterations
+    pathCorpus = f"{models.corpus_dir}{pathCorpus}"
     try:
         utils.checkFile(pathCorpus)
         utils.checkInt(numIterations)
@@ -32,9 +33,10 @@ def trainModel(name,pathCorpus, mdl, numIterations):
     except customErrors.InvalidCharsError as e:
         utils.error("Invalid param" + " - " + str(e))
 
+    mdl = models.getModelDescriptorListObj(mdl)
     ret = models.appendModelDescriptorList(mdl, models.Model(name, pathCorpus,numIterations))
     #descriptor de modelo
-    return ret
+    return models.modelDescriptorListToJSON(ret)
 
 
 def trainBot(jsonBot,modelDescriptorList):
@@ -69,10 +71,7 @@ def _main():
         outfile = True
         idx = v.index("--outfile")
         outpath = v[idx + 1]
-        try:
-            utils.checkFile(outpath)
-        except FileNotFoundError as e:
-            utils.error("Out file path not available : " + str(e))
+
         v.pop(idx)
         v.pop(idx)
 
@@ -107,7 +106,7 @@ def _main():
         jsonBot = v[2]
         if (asciiin):
             jsonBot = utils.asciiToText(v[2])
-        return getResponse(jsonBot,v[3],filterParams)
+        ret = getResponse(jsonBot,v[3],filterParams)
 
     elif(v[1] == "setupBaseModel"):
         if(len(v) != 2):

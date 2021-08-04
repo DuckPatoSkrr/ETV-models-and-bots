@@ -30,8 +30,12 @@ def _relation(likes, word):
 
     for i in likes:
         iunified = WebSearch.request(f"{i} wikipedia").header
+        if iunified == "":
+            iunified = i
         wordunified = WebSearch.request(f"{word} wikipedia").header
-        res = man.consult(f"show_r({PrologManager.formatText(i)},{PrologManager.formatText(wordunified)},P)")
+        if wordunified == "":
+            wordunified = word
+        res = man.consult(f"show_r({PrologManager.formatText(iunified)},{PrologManager.formatText(wordunified)},P)")
         ret += abs(res["P"])
     return ret
 
@@ -42,11 +46,15 @@ class BotInstance:
 
     def _getModelBasedOnContext(self, context): #TODO igual esto se puede hacer mejor
         maxp = -1
+        ret = None
         for m in self.mymodels:
-            p = _punt(m.keywords, context)
+            model = models.jsonConstructor(m)
+            p = _punt(model.keywords, context)
             if(p > maxp):
-                ret = m
+                ret = model
                 maxp = p
+        if(ret is None):
+            ret = models.jsonConstructor(self.mymodels[0])
         return ret
 
     def _modelFits(self,model):
@@ -91,7 +99,7 @@ class BotInstance:
         for m in modelList:
             model = models.jsonConstructor(m)
             if(self._modelFits(model)):
-                self.mymodels.append(model)
+                self.mymodels.append(model.toJSON())
 
     def toJSON(self):
         jsonFile = {"age": self.age, "level_of_education":self.level_of_education, "mymodelsnames": self.mymodels, "likes": self.likes, "dislikes": self.dislikes}
@@ -103,7 +111,7 @@ def jsonConstructor(inpt):
         out = json.loads(inpt)
         age = out["age"]
         level_of_education = out["level_of_education"]
-        modelsList = out["mymodels"]
+        modelsList = out["mymodelsnames"]
         likes = out["likes"]
         dislikes = out["dislikes"]
     except Exception as e:

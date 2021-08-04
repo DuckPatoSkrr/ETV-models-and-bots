@@ -12,13 +12,14 @@ default_model_version = "124M"
 
 corpus_dir = "./rawCorpus/"
 
-def _generateKeywords(name,n=100):
+def _generateKeywords(path,n=100):
     ret =[]
+    name = path.split("/")[len(path.split("/")) - 1]
     nameout = f"{name}out"
     utils.cprint("Extracting keywords from corpus...")
 
     #Tokenize text
-    wordCounter.tokenize(f"{corpus_dir}{name}", f"{corpus_dir}tokenizedRawCorpus/{name}")
+    wordCounter.tokenize(path, f"{corpus_dir}tokenizedRawCorpus/{name}")
 
     #Counting words
     copyfile(f"{corpus_dir}tokenizedRawCorpus/{name}", f"./misc/wordCounter/{name}")
@@ -55,17 +56,18 @@ def jsonConstructor(jsonin):
         out = json.loads(jsonin)
         name = out["name"]
         kw = out["keywords"]
+        path = out["path"]
     except Exception as e:
         raise customErrors.BadParamError("Bad JSON constructor: " + str(e))
-    return Model(name, kw)
+    return Model(name,corpusPath=path, keywords=kw)
 
 class Model:
     name = ""
     keywords = []
     path = ""
 
-    def __init__(self,name,corpusPath=None,num_iterations=0,keywords=[],):
-        if not (corpusPath is None):
+    def __init__(self,name,corpusPath=None,num_iterations=0,keywords=[]):
+        if num_iterations > 0 and not (corpusPath is None):
             trainModel(corpusPath,name,num_iterations)
         self.name = name
 
@@ -73,7 +75,7 @@ class Model:
             self.keywords = keywords
         elif not (corpusPath is None):
             self.keywords = _generateKeywords(corpusPath)
-            self.path = corpusPath
+        self.path = corpusPath
 
 
     def toJSON(self):

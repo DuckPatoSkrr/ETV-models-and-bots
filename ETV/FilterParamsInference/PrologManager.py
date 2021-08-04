@@ -2,8 +2,8 @@ from pyswip import Prolog
 from misc import utils
 from misc import customErrors
 
-default_facts = "facts.pl"
-default_rules = "rules.pl"
+default_facts = "./FilterParamsInference/facts.pl"
+default_rules = "./FilterParamsInference/rules.pl"
 
 def _getVars(s):
     i = 0
@@ -28,7 +28,7 @@ def formatText(inpt):
     ret = inpt.replace(" ","_")
     ret = ret.replace(".","_")
     ret = ret.replace(",", "_")
-    ret = ret.str.lower()
+    ret = ret.lower()
     return ret
 
 class Manager():

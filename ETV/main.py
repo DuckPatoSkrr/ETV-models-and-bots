@@ -1,12 +1,13 @@
-from misc import Bot
-
-
+from misc.wordCounter import wordCounter
+import threading
+import os
+import time
+from models import models
 # MAIN
+
+
 def main():
-    test = Bot.BotInstance("test", loadModels=["testMood"], modelKeywords={"testMood":["key1", "key2"]})
-    json = test.toJSON()
-    otroTest = Bot.jsonConstructor(json)
-    print(otroTest.toJSON())
+    print(models._generateKeywords("shakespeare.txt"))
 
     exit(0)
 

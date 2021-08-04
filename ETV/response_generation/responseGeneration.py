@@ -2,9 +2,9 @@ import random
 
 import gpt_2_simple as gpt2
 from sentiment_analysis import sentimentAnalysis
-from abbreviations import abbr_list
-from abbreviations import enders_list
-from abbreviations import starters_list
+from response_generation.abbreviations import abbr_list
+from response_generation.abbreviations import enders_list
+from response_generation.abbreviations import starters_list
 
 def _maxPoints(list):
     max = list[0]
@@ -149,7 +149,7 @@ def generateResponse(model,
     gpt2.load_gpt2(sess, run_name=model.name)
     textGenerated = gpt2.generate(sess, prefix=prefix, run_name=model.name,
                                   batch_size=number_of_responses, nsamples=number_of_responses,
-                                  return_as_list=True, length=nchars)
+                                  return_as_list=True, length=nchars,destination_path="responses")
     return _processedText(textGenerated,nchars, posFactor, keyWords)
 
 
