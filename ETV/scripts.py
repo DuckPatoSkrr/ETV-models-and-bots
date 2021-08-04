@@ -17,6 +17,10 @@ def create(age,level_of_education,likes,dislikes):
         utils.error(f"Error while creating bot, bad param: {str(e)}")
     splikes = likes.split(",")
     spdislikes = dislikes.split(",")
+    for i in range(len(splikes)):
+        splikes[i] = utils.unifyWord(splikes[i])
+    for i in range(len(spdislikes)):
+        spdislikes[i] = utils.unifyWord(spdislikes[i])
 
     return Bot.BotInstance(age,level_of_education,likes=splikes,dislikes=spdislikes).toJSON()
 
@@ -59,7 +63,9 @@ def _main():
     global outfile
     global outpath
 
-    print(v)
+    #TODO DEPURACION
+    #return v
+    #TODO QUITAR AL TERMINAR DEPURACION
 
     if("--ascii-out" in v):
         asciiout = True

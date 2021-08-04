@@ -85,6 +85,9 @@ class BotInstance:
     def generateResponse(self, context, filterParams,
                          prefix=None):
 
+        if not self.mymodels:
+            utils.error("Cant generate response, untrained bot.")
+
         inferedParams = Inferencer.inferParams(self, context)
         finalParams = utils.fusionParams(filterParams, inferedParams)
         finalParams = utils.filterParams(finalParams.split(" "), 0)

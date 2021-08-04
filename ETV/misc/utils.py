@@ -3,6 +3,8 @@ import json
 import random
 import os
 import gpt_2_simple as gpt2
+import WebSearch
+from FilterParamsInference import PrologManager
 
 class FilterParams:
     keywords =[]
@@ -187,3 +189,9 @@ def setupBaseModel(model = default_model):
     else:
         cprint(f'Model already installed, manually delete dir \"{model}\" if you want to reinstall this model')
 
+def unifyWord(word):
+    ret = WebSearch.request(f"{word} wikipedia").header
+    if(ret == ""):
+        ret = word
+
+    return PrologManager.formatText(ret)
