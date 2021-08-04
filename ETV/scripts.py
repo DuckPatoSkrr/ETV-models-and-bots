@@ -11,8 +11,8 @@ def create(age,level_of_education,likes,dislikes):
     try:
         utils.checkInt(age)
         utils.checkInt(level_of_education)
-        utils.checkAlphanumeric(likes,',')
-        utils.checkAlphanumeric(dislikes, ',')
+        utils.checkAlphanumeric(likes,',',' ')
+        utils.checkAlphanumeric(dislikes, ',',' ')
     except customErrors.InvalidCharsError as e:
         utils.error(f"Error while creating bot, bad param: {str(e)}")
     splikes = likes.split(",")
@@ -63,9 +63,6 @@ def _main():
     global outfile
     global outpath
 
-    #TODO DEPURACION
-    return v
-    #TODO QUITAR AL TERMINAR DEPURACION
 
     if("--ascii-out" in v):
         asciiout = True
