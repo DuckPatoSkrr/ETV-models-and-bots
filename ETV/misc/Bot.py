@@ -4,6 +4,7 @@ import json
 from sentiment_analysis import sentimentAnalysis
 from FilterParamsInference import Inferencer,PrologManager
 from models import models
+from misc import WebSearch
 
 learn_threshold = 0
 
@@ -26,8 +27,11 @@ def _extractKWfromContext(context):  # devuelve lista
 def _relation(likes, word):
     ret = 0
     man = PrologManager.Manager()
+
     for i in likes:
-        res = man.consult(f"show_r({i},{word},P)")
+        iunified = WebSearch.request(f"{i} wikipedia").header
+        wordunified = WebSearch.request(f"{word} wikipedia").header
+        res = man.consult(f"show_r({PrologManager.formatText(i)},{PrologManager.formatText(wordunified)},P)")
         ret += abs(res["P"])
     return ret
 
@@ -49,6 +53,7 @@ class BotInstance:
         punt = 0
         for kw in model.keywords:
             punt += _relation(self.likes,kw)
+            punt += _relation(self.dislikes,kw)
 
         return punt >= learn_threshold
 

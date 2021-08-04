@@ -10,14 +10,19 @@ default_model_version = "124M"
 
 # PRIVATE
 
-def _generateKeywords(corpusPath,n=10):
-    ret =[]
-    name = corpusPath.split("/")[len(corpusPath.split("/")) - 1]
-    nameout = f"{name}out"
-    copyfile(corpusPath, f"./misc/wordCounter/{name}")
-    utils.cprint("Extracting keywords from corpus...")
-    wordCounter.counter(name, nameout, n)
+corpus_dir = "./rawCorpus/"
 
+def _generateKeywords(name,n=100):
+    ret =[]
+    nameout = f"{name}out"
+    utils.cprint("Extracting keywords from corpus...")
+
+    #Tokenize text
+    wordCounter.tokenize(f"{corpus_dir}{name}", f"{corpus_dir}tokenizedRawCorpus/{name}")
+
+    #Counting words
+    copyfile(f"{corpus_dir}tokenizedRawCorpus/{name}", f"./misc/wordCounter/{name}")
+    wordCounter.counter(name, nameout, n)
 
     with open(f"./misc/wordCounter/{nameout}") as f:
         for line in f:
