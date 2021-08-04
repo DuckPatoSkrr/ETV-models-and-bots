@@ -135,4 +135,4 @@ def _main():
     return ret
 
 
-_main()
+print(_main())
