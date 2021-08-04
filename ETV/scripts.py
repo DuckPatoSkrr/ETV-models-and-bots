@@ -64,7 +64,7 @@ def _main():
     global outpath
 
     #TODO DEPURACION
-    #return v
+    return v
     #TODO QUITAR AL TERMINAR DEPURACION
 
     if("--ascii-out" in v):
