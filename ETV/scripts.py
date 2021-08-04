@@ -32,6 +32,7 @@ def trainModel(name,pathCorpus, mdl, numIterations):
     try:
         utils.checkFile(pathCorpus)
         utils.checkInt(numIterations)
+        numIterations = int(numIterations)
     except FileNotFoundError as e:
         utils.error("Bad path" + " - " + str(e))
     except customErrors.InvalidCharsError as e:
