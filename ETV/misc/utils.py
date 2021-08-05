@@ -60,6 +60,11 @@ def checkFile(path): #checks if the file is available, throws exception otherwis
     except FileNotFoundError as e:
         raise FileNotFoundError("Path doesn't represent an available file:" + str(e))
 
+def checkDir(path):
+    if not os.path.isdir(path):
+        raise NotADirectoryError(f"Path doesn't represent a valid directory")
+
+
 def checkAlphanumeric(inpt, *extrachars):
     for c in inpt:
         minuscula = (ord(c) >= ord('a') and ord(c) <= ord('z'))

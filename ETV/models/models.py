@@ -11,6 +11,10 @@ default_model_version = "124M"
 # PRIVATE
 
 corpus_dir = os.path.join(os.getcwd(),"\\rawCorpus\\")
+try:
+    utils.checkDir(corpus_dir)
+except NotADirectoryError as e:
+    utils.error(f"rawCorpus dir not found in {corpus_dir}: {str(e)}")
 
 def _generateKeywords(name,n=100):
     ret =[]
