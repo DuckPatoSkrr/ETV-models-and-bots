@@ -124,7 +124,7 @@ def _main():
 
     elif(v[1] == "setupBaseModel"):
         if(len(v) != 2):
-            utils.error("Usage \"getResponse jsonBot \"context\" (filterParams, read filterParams file for more information)\"")
+            utils.error("Usage \"setupBaseModel\"")
         setupBaseModel()
         exit(0)
     else:
