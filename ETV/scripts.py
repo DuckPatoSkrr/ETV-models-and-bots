@@ -69,6 +69,7 @@ def _main():
     if ("--wd" in v):
         i = v.index("--wd")
         os.chdir(v[i + 1])
+        utils.cprint(f"Dir changed to {os.getcwd()}")
         v.pop(i)
         v.pop(i)
 

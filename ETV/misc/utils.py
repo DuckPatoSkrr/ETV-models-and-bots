@@ -49,6 +49,9 @@ default_num_iterations = 5
 
 def cprint(text):
     print(text)
+    with open("log.txt","a") as f:
+        f.write(f"{text}\n")
+
 
 def checkFile(path): #checks if the file is available, throws exception otherwise
     try:
