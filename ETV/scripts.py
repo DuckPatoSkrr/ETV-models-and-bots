@@ -92,12 +92,12 @@ def _main():
 
     if(v[1] == "create"): #create age level_of_education "likes" "dislikes"
         if(len(v) != 6):
-            utils.error("Usage \"create age level_of_education \"likes\" \"dislikes\" \"")
+            utils.error(f"Usage \"create age level_of_education \"likes\" \"dislikes\" \", {str(v)} was instroduced")
         ret = create(v[2],v[3],v[4],v[5])
 
     elif(v[1]=="trainModel"): #trainModel name pathCorpus "keywords,..." (-n int)
         if (len(v) < 5):
-            utils.error("Usage \"trainModel name pathCorpus \"modelDescriptorList\" (-n numIterations)\"")
+            utils.error(f"Usage \"trainModel name pathCorpus \"modelDescriptorList\" (-n numIterations)\", {str(v)} was instroduced")
         numIt = None
         if("-n" in v):
             numIt = v[v.index("-n") + 1]
@@ -105,7 +105,7 @@ def _main():
 
     elif(v[1]=="trainBot"): #trainBot jsonBot modelDescriptorList
         if (len(v) != 4):
-            utils.error("Usage \"trainBot jsonBot modelDescriptorList\"")
+            utils.error(f"Usage \"trainBot jsonBot modelDescriptorList\", {str(v)} was instroduced")
         jsonBot = v[2]
         jsonModel = v[3]
         if(asciiin):
@@ -115,7 +115,7 @@ def _main():
 
     elif (v[1] == "getResponse"): #getResponse jsonBot context filterParams
         if (len(v) < 4):
-            utils.error("Usage \"getResponse jsonBot \"context\" (filterParams, read filterParams file for more information)\"")
+            utils.error(f"Usage \"getResponse jsonBot \"context\" (filterParams, read filterParams file for more information)\", {str(v)} was instroduced")
         filterParams = utils.filterParams(v, 4)
         jsonBot = v[2]
         if (asciiin):
@@ -124,7 +124,7 @@ def _main():
 
     elif(v[1] == "setupBaseModel"):
         if(len(v) != 2):
-            utils.error("Usage \"setupBaseModel\"")
+            utils.error(f"Usage \"setupBaseModel\", {str(v)} was instroduced")
         setupBaseModel()
         exit(0)
     else:
