@@ -10,7 +10,7 @@ default_model_version = "124M"
 
 # PRIVATE
 
-corpus_dir = os.path.join(os.getcwd(),"\\rawCorpus\\")
+corpus_dir = os.path.join(os.getcwd(),"rawCorpus\\")
 try:
     utils.checkDir(corpus_dir)
 except NotADirectoryError as e:
