@@ -1,5 +1,5 @@
 import os.path
-
+from datetime import datetime
 from misc import Bot, customErrors, utils
 from models import models
 import sys
@@ -65,6 +65,10 @@ def _main():
     global asciiin
     global outfile
     global outpath
+
+    now = datetime.now()
+    dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+    utils.cprint(F"EXECUTION {dt_string}")
 
     if ("--wd" in v):
         i = v.index("--wd")

@@ -91,6 +91,7 @@ def uppercase(c):
     return ord(c) >= ord('A') and ord(c) <= ord('Z')
 
 def error(msg):
+    cprint(msg)
     raise customErrors.FatalError(msg)
 
 
