@@ -10,27 +10,29 @@ default_model_version = "124M"
 
 # PRIVATE
 
-corpus_dir = "./rawCorpus/"
+corpus_dir = os.path.join(os.getcwd(),"rawCorpus/")
 
-def _generateKeywords(path,n=100):
+def _generateKeywords(name,n=100):
     ret =[]
-    name = path.split("/")[len(path.split("/")) - 1]
+    filePath = os.path.join(corpus_dir,name)
     nameout = f"{name}out"
     utils.cprint("Extracting keywords from corpus...")
 
+    tokenizedPath = os.path.join(corpus_dir,f"tokenizedRawCorpus/{name}")
     #Tokenize text
-    wordCounter.tokenize(path, f"{corpus_dir}tokenizedRawCorpus/{name}")
+    wordCounter.tokenize(filePath, tokenizedPath)
 
+    counterPath = os.path.join(os.getcwd(),"misc/wordCounter/")
     #Counting words
-    copyfile(f"{corpus_dir}tokenizedRawCorpus/{name}", f"./misc/wordCounter/{name}")
+    copyfile(tokenizedPath, os.path.join(counterPath,name))
     wordCounter.counter(name, nameout, n)
 
-    with open(f"./misc/wordCounter/{nameout}") as f:
+    with open(os.path.join(counterPath,nameout)) as f:
         for line in f:
             ret.append(line.rstrip("\n"))
 
-    os.remove(f"./misc/wordCounter/{name}")
-    os.remove(f"./misc/wordCounter/{nameout}")
+    os.remove(os.path.join(counterPath,name))
+    os.remove(os.path.join(counterPath,name))
 
     return ret
 
@@ -68,7 +70,7 @@ class Model:
 
     def __init__(self,name,corpusPath=None,num_iterations=0,keywords=[]):
         if num_iterations > 0 and not (corpusPath is None):
-            trainModel(corpusPath,name,num_iterations)
+            trainModel(os.path.join(corpus_dir,corpusPath),name,num_iterations)
         self.name = name
 
         if len(keywords) != 0:

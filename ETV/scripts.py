@@ -1,3 +1,5 @@
+import os.path
+
 from misc import Bot, customErrors, utils
 from models import models
 import sys
@@ -28,9 +30,9 @@ def create(age,level_of_education,likes,dislikes):
 def trainModel(name,pathCorpus, mdl, numIterations):
     if(numIterations is None):
         numIterations = utils.default_num_iterations
-    pathCorpus = f"{models.corpus_dir}{pathCorpus}"
+
     try:
-        utils.checkFile(pathCorpus)
+        utils.checkFile(os.path.join(models.corpus_dir,pathCorpus))
         utils.checkInt(numIterations)
         numIterations = int(numIterations)
     except FileNotFoundError as e:
