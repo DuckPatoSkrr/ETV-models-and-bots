@@ -10,7 +10,7 @@ default_model_version = "124M"
 
 # PRIVATE
 
-corpus_dir = os.path.join(os.getcwd(),"rawCorpus\\")
+corpus_dir = os.path.join(os.getcwd(),"rawCorpus/")
 try:
     utils.checkDir(corpus_dir)
 except NotADirectoryError as e:
@@ -22,11 +22,11 @@ def _generateKeywords(name,n=100):
     nameout = f"{name}out"
     utils.cprint("Extracting keywords from corpus...")
 
-    tokenizedPath = os.path.join(corpus_dir,f"tokenizedRawCorpus\\{name}")
+    tokenizedPath = os.path.join(corpus_dir,f"tokenizedRawCorpus/{name}")
     #Tokenize text
     wordCounter.tokenize(filePath, tokenizedPath)
 
-    counterPath = os.path.join(os.getcwd(),"misc\\wordCounter\\")
+    counterPath = os.path.join(os.getcwd(),"misc/wordCounter/")
     #Counting words
     copyfile(tokenizedPath, os.path.join(counterPath,name))
     wordCounter.counter(name, nameout, n)

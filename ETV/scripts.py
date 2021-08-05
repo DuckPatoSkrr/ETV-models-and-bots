@@ -69,9 +69,11 @@ def _main():
     now = datetime.now()
     dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
     utils.cprint(F"EXECUTION {dt_string}")
+    utils.cprint(f"Args: {str(v)}")
 
     if ("--wd" in v):
         i = v.index("--wd")
+        v[i + 1] = v[i + 1].replace('\\','/')
         os.chdir(v[i + 1])
         utils.cprint(f"Dir changed to {os.getcwd()}")
         v.pop(i)
