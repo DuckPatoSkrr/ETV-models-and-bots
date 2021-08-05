@@ -189,7 +189,7 @@ def setupBaseModel(model = default_model):
     if not os.path.isdir(os.path.join("models", model)):
         cprint(f"Downloading {model} model...")
         gpt2.download_gpt2(model_name=model)
-        cprint(f"model is saved into current directory under /models/{model}/") # model is saved into current directory under /models/(model)/
+        cprint(f"model has been saved into current directory under /models/{model}/") # model is saved into current directory under /models/(model)/
     else:
         cprint(f'Model already installed, manually delete dir \"{model}\" if you want to reinstall this model')
 
