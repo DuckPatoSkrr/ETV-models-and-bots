@@ -66,6 +66,12 @@ def _main():
     global outfile
     global outpath
 
+    if ("--wd" in v):
+        i = v.index("--wd")
+        os.chdir(v[i + 1])
+        v.pop(i)
+        v.pop(i)
+
 
     if("--ascii-out" in v):
         asciiout = True
