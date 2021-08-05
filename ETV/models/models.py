@@ -74,7 +74,10 @@ class Model:
 
     def __init__(self,name,corpusPath=None,num_iterations=0,keywords=[]):
         if num_iterations > 0 and not (corpusPath is None):
-            trainModel(os.path.join(corpus_dir,corpusPath),name,num_iterations)
+            try:
+                trainModel(os.path.join(corpus_dir,corpusPath),name,num_iterations)
+            except Exception as e:
+                utils.error(f"Error while training model: {str(e)}")
         self.name = name
 
         if len(keywords) != 0:
