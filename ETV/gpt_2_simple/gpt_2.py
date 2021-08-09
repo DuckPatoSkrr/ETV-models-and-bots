@@ -15,6 +15,8 @@ from datetime import datetime
 import csv
 import argparse
 
+from misc import utils
+
 # if in Google Colaboratory
 try:
     from google.colab import drive
@@ -172,7 +174,7 @@ def finetune(sess,
             shutil.copyfile(os.path.join(model_dir, model_name, file),
                             os.path.join(checkpoint_path, file))
         except FileNotFoundError as fnf_error:
-            print("You need to download the GPT-2 model first via download_gpt2()")
+            utils.cprint("You need to download the GPT-2 model first via download_gpt2()")
             raise(fnf_error)
 
     enc = encoder.get_encoder(checkpoint_path)
@@ -194,7 +196,7 @@ def finetune(sess,
 
     if multi_gpu:
         gpus = get_available_gpus()
-        print(gpus)
+        utils.cprint(gpus)
 
     output = model.model(hparams=hparams, X=context, gpus=gpus)
     loss = tf.reduce_mean(
@@ -254,14 +256,14 @@ def finetune(sess,
             os.path.join(model_dir, model_name))
     else:
         ckpt = tf.train.latest_checkpoint(restore_from)
-    print('Loading checkpoint', ckpt)
+    utils.cprint('Loading checkpoint', ckpt)
     saver.restore(sess, ckpt)
 
-    print('Loading dataset...')
+    utils.cprint('Loading dataset...')
     chunks = load_dataset(enc, dataset, combine)
     data_sampler = Sampler(chunks)
-    print('dataset has', data_sampler.total_size, 'tokens')
-    print('Training...')
+    utils.cprint('dataset has', data_sampler.total_size, 'tokens')
+    utils.cprint('Training...')
 
     counter = 1
     counter_path = os.path.join(checkpoint_path, 'counter')
@@ -274,7 +276,7 @@ def finetune(sess,
 
     def save():
         maketree(checkpoint_path)
-        print(
+        utils.cprint(
             'Saving',
             os.path.join(checkpoint_path,
                          'model-{}').format(counter-1))
@@ -299,7 +301,7 @@ def finetune(sess,
                     index + 1, text)
                 all_text.append(text)
                 index += 1
-        print(text)
+        utils.cprint(text)
         maketree(os.path.join(SAMPLE_DIR, run_name))
         with open(
                 os.path.join(SAMPLE_DIR, run_name,
@@ -348,7 +350,7 @@ def finetune(sess,
                 avg_loss = (avg_loss[0] * 0.99 + v_loss,
                             avg_loss[1] * 0.99 + 1.0)
 
-                print(
+                utils.cprint(
                     '[{counter} | {time:2.2f}] loss={loss:2.2f} avg={avg:2.2f}'
                     .format(
                         counter=counter,
@@ -358,7 +360,7 @@ def finetune(sess,
 
             counter += 1
     except KeyboardInterrupt:
-        print('interrupted')
+        utils.cprint('interrupted')
         save()
 
 
@@ -399,9 +401,9 @@ def load_gpt2(sess,
     sess.run(tf.compat.v1.global_variables_initializer())
 
     if model_name:
-        print('Loading pretrained model', ckpt)
+        utils.cprint('Loading pretrained model', ckpt)
     else:
-        print('Loading checkpoint', ckpt)
+        utils.cprint('Loading checkpoint', ckpt)
     saver.restore(sess, ckpt)
 
 
@@ -657,9 +659,9 @@ def encode_dataset(file_path, model_dir='models', out_path='text_encoded.npz',
 
     model_path = os.path.join(model_dir, model_name)
     enc = encoder.get_encoder(model_path)
-    print('Reading files')
+    utils.cprint('Reading files')
     chunks = load_dataset(enc, file_path, combine)
-    print('Writing', out_path)
+    utils.cprint('Writing', out_path)
     np.savez_compressed(out_path, *chunks)
 
 
