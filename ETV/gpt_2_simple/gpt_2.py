@@ -145,7 +145,7 @@ def finetune(sess,
              save_every=1000,
              print_every=1,
              max_checkpoints=1,
-             use_memory_saving_gradients=False,
+             use_memory_saving_gradients=True,
              only_train_transformer_layers=False,
              optimizer='adam',
              overwrite=False):
