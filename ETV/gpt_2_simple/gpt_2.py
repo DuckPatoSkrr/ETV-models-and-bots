@@ -326,6 +326,7 @@ def finetune(sess,
     
     try:
         while True:
+            utils.cprint("DEBUG GPT2: Main loop entered")
             if steps > 0 and counter == (counter_base + steps):
                 save()
                 return
