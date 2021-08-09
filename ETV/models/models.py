@@ -101,4 +101,4 @@ def trainModel(corpusPath, nameOfModel, num_iterations = 5, _model_version = def
     sess = gpt2.start_tf_sess() #config (threads and external server)
     gpt2.finetune(sess, corpusPath,
                   model_name=_model_version, steps=num_iterations, run_name=nameOfModel,
-                  restore_from='fresh', multi_gpu=False,)  # steps is max number of training step
+                  restore_from='fresh', multi_gpu=True)  # steps is max number of training step
