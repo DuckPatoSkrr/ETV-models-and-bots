@@ -257,13 +257,13 @@ def finetune(sess,
             os.path.join(model_dir, model_name))
     else:
         ckpt = tf.train.latest_checkpoint(restore_from)
-    utils.cprint('Loading checkpoint', ckpt)
+    utils.cprint(f'Loading checkpoint {str(ckpt)}')
     saver.restore(sess, ckpt)
 
     utils.cprint('Loading dataset...')
     chunks = load_dataset(enc, dataset, combine)
     data_sampler = Sampler(chunks)
-    utils.cprint('dataset has', data_sampler.total_size, 'tokens')
+    utils.cprint(f'dataset has {data_sampler.total_size} tokens')
     utils.cprint('Training...')
 
     counter = 1
@@ -278,9 +278,7 @@ def finetune(sess,
     def save():
         maketree(checkpoint_path)
         utils.cprint(
-            'Saving',
-            os.path.join(checkpoint_path,
-                         'model-{}').format(counter-1))
+            f"Saving {os.path.join(checkpoint_path,'model-{}').format(counter-1)}")
         saver.save(
             sess,
             os.path.join(checkpoint_path, 'model'),
@@ -403,9 +401,9 @@ def load_gpt2(sess,
     sess.run(tf.compat.v1.global_variables_initializer())
 
     if model_name:
-        utils.cprint('Loading pretrained model', ckpt)
+        utils.cprint(f'Loading pretrained model {str(ckpt)}')
     else:
-        utils.cprint('Loading checkpoint', ckpt)
+        utils.cprint(f'Loading checkpoint {str(ckpt)}')
     saver.restore(sess, ckpt)
 
 
@@ -663,7 +661,7 @@ def encode_dataset(file_path, model_dir='models', out_path='text_encoded.npz',
     enc = encoder.get_encoder(model_path)
     utils.cprint('Reading files')
     chunks = load_dataset(enc, file_path, combine)
-    utils.cprint('Writing', out_path)
+    utils.cprint(f'Writing {str(out_path)}')
     np.savez_compressed(out_path, *chunks)
 
 
