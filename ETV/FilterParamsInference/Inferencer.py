@@ -7,16 +7,17 @@ from FilterParamsInference import PrologManager
 
 
 def _inferPositivity(bot, prop):
+    finalObj = ""
     for i in prop:
-        if i.objct != "":
+        if i.objct and not finalObj:
             finalObj = i.objct
             break
     for i in prop:
-        if i.pnouns:
+        if i.pnouns and not finalObj:
             finalObj = i.pnouns[0]
             break
     for i in prop:
-        if i.nouns:
+        if i.nouns and not finalObj:
             finalObj = i.nouns[0]
             break
 
