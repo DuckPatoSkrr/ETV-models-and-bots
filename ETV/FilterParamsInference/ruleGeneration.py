@@ -1,3 +1,4 @@
+from ETV.misc.utils import unifyWord
 from ETV.sentiment_analysis import sentimentAnalysis
 from collections import defaultdict
 
@@ -22,9 +23,12 @@ def checkSentence(pairs_dict, sentence):
         return pairs_dict
     classifier = sentimentAnalysis.Classifier()
     res = classifier.classify(sentence)
-    pamount = len(res.pnouns)
+    pnouns = res.pnouns
+    pamount = len(pnouns)
     if pamount > 1:
         for i in range(pamount):
+            pnouns[i] = unifyWord(pnouns[i])
+        for i in range(pamount):
             for j in range(i + 1, pamount):
-                pairs_dict[(res.pnouns[i], res.pnouns[j])].append(res.sentiment_polarity)
+                pairs_dict[(pnouns[i], pnouns[j])].append(res.sentiment_polarity)
     return pairs_dict
