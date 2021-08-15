@@ -1,19 +1,30 @@
 from ETV.misc.utils import unifyWord
 from ETV.sentiment_analysis import sentimentAnalysis
 from collections import defaultdict
+import re
 
 
-# takes the text already turned into sentences and obtains a dictionary
+# takes the text and obtains a dictionary
 # where keys are pairs of words and values are how positively related they are
-def checkText(sentences):
+# then turns that dictionary into prolog facts
+def generateFacts(corpus_file):
     final_dict = {}
     pairs_dict = defaultdict(list)
-    for sent in sentences:
-        pairs_dict = checkSentence(pairs_dict, sent)
+    load_chunk = lambda f: ' '.join(f.readlines(1024))
+
+    with open(corpus_file, "r") as file:
+        chunk = load_chunk(file)
+        while chunk:
+            text = chunk.lower()
+            for sentence in re.split(';|,|\.|:', text):
+                pairs_dict = checkSentence(pairs_dict, sentence)
+            chunk = load_chunk(file)
+
     for pair in pairs_dict:
         if len(pairs_dict[pair]) > 0:
             final_dict[pair] = sum(pairs_dict[pair]) / len(pairs_dict[pair])
-    return final_dict
+
+    dictToFacts(final_dict)
 
 
 # the input will be a defaultdic dictionary where the keys are the two words related
@@ -47,7 +58,7 @@ def dictToFacts(text_dict):
 
     # now we delete the lines with term relationship rules
     # and store them in our aux dictionary
-    for i in range(0,len(lines)):
+    for i in range(0, len(lines)):
         if lines[i].startswith("relacionTerm"):
             line_list = lines[i].split("\"");
             value_aux = line_list[4][1:].split(")");
@@ -55,7 +66,7 @@ def dictToFacts(text_dict):
             delete_lines.append(i)
 
     # we make sure to delete the lines after looping through them to not mess with the loop
-    for i in range(0,len(delete_lines)):
+    for i in range(0, len(delete_lines)):
         del lines[i]
 
     # now we combine this aux dictionary with the obtained from the text
