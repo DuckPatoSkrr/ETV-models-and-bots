@@ -48,9 +48,15 @@ default_model = "124M"
 default_num_iterations = 5
 
 def cprint(text):
-    print(text)
-    with open("log.txt","a") as f:
-        f.write(f"{text}\n")
+    try:
+        print(text)
+        with open("log.txt","a") as f:
+            f.write(f"{text}\n")
+    except Exception as e:
+        msg = f"Error in cprint: {str(e)}"
+        print(msg)
+        with open("log.txt", "a") as f:
+            f.write(f"{msg}\n")
 
 
 def checkFile(path): #checks if the file is available, throws exception otherwise
