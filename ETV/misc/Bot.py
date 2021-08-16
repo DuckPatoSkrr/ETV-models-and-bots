@@ -30,12 +30,8 @@ def _relation(likes, word):
     man = PrologManager.Manager()
 
     for i in likes:
-        iunified = WebSearch.request(f"{i} wikipedia").header
-        if iunified == "":
-            iunified = i
-        wordunified = WebSearch.request(f"{word} wikipedia").header
-        if wordunified == "":
-            wordunified = word
+        iunified = utils.unifyWord(i)
+        wordunified = utils.unifyWord(word)
         res = man.consult(f"show_r({PrologManager.formatText(iunified)},{PrologManager.formatText(wordunified)},P)")
         ret += abs(res["P"])
     return ret
