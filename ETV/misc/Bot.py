@@ -11,7 +11,8 @@ learn_threshold = 0
 def _punt(modelK, inputK):
     ret = 0
     for m in inputK:
-        if (m in modelK):
+        u = utils.unifyWord(m)
+        if (u in modelK):
             ret += 1
     return ret
 
