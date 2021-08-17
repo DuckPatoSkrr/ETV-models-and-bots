@@ -36,12 +36,12 @@ def _inferPositivity(bot, prop):
     maxv = 0
     dislikes = False
     for x in bot.likes:
-        res = man.consult(f"show_r({PrologManager.formatText(unified)},{PrologManager.formatText(x)},P)")
+        res = man.consult(f"show_r({PrologManager.formatText(unified)},{PrologManager.formatText(x)},P).")
         if abs(res["P"]) > maxv:
             maxv = res["P"]
 
     for x in bot.dislikes:
-        res = man.consult(f"show_r({PrologManager.formatText(unified)},{PrologManager.formatText(x)},P)")
+        res = man.consult(f"show_r({PrologManager.formatText(unified)},{PrologManager.formatText(x)},P).")
         if abs(res["P"]) > maxv:
             maxv = res["P"]
             dislikes = True
@@ -50,7 +50,30 @@ def _inferPositivity(bot, prop):
 
 def _inferKeywords(bot,prop,n = 50):
     ret = []
-    #TODO
+    man = PrologManager.Manager()
+
+    finalObj = []
+    for i in prop:
+        if i.objct:
+            finalObj.append(i.objct)
+    for i in prop:
+        if i.pnouns and not finalObj:
+            finalObj.append(i.pnouns[0])
+    for i in prop:
+        if i.nouns and not finalObj:
+            finalObj.append(i.nouns[0])
+
+    for word in finalObj:
+        ret.append(word)
+        for like in bot.likes:
+            res = man.consult(f"show_r({utils.unifyWord(word)},{like},P).")
+            if abs(res["P"]) > 0.7:
+                ret.append(utils.unifyWord(like,format_out=False))
+        for like in bot.dislikes:
+            res = man.consult(f"show_r({utils.unifyWord(word)},{like},P).")
+            if abs(res["P"]) > 0.7:
+                ret.append(utils.unifyWord(like,format_out=False))
+
     return ret
 
 def inferParams(bot, user):

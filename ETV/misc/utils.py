@@ -204,9 +204,10 @@ def setupBaseModel(model = default_model):
     else:
         cprint(f'Model already installed, manually delete dir \"{model}\" if you want to reinstall this model')
 
-def unifyWord(word):
+def unifyWord(word, format_out = True):
     ret = WebSearch.request(f"{word} wikipedia").header
     if(ret == ""):
         ret = word
-
-    return PrologManager.formatText(ret)
+    if format_out:
+        return PrologManager.formatText(ret)
+    return ret
