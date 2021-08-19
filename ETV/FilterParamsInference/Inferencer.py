@@ -3,6 +3,9 @@ from misc import utils
 from sentiment_analysis import sentimentAnalysis
 from misc import WebSearch
 from FilterParamsInference import PrologManager
+from response_generation.abbreviations import abbr_list
+from response_generation.abbreviations import enders_list
+from response_generation.abbreviations import starters_list
 
 
 
@@ -76,6 +79,30 @@ def _inferKeywords(bot,prop,n = 50):
 
     return ret
 
+def _inferSlang(bot, text):
+    factor = 0
+    slang_words = []
+
+    for abbr in abbr_list:
+        shortened = abbr_list[abbr][0]
+        if shortened not in slang_words:
+            slang_words.append(shortened)
+    for ender in enders_list:
+        if ender not in slang_words:
+            slang_words.append(ender)
+    for starter in starters_list:
+        if starter not in slang_words:
+            slang_words.append(starter)
+
+    for word in slang_words:
+        if text.find(word) > -1:
+            factor += 2
+
+    if factor > 10:
+        factor = 10
+
+    return factor
+
 def inferParams(bot, user):
     ret = utils.FilterParams()
     classifier = sentimentAnalysis.Classifier()
@@ -83,5 +110,6 @@ def inferParams(bot, user):
 
     ret.posFactor = _inferPositivity(bot,prop)
     ret.keywords = _inferKeywords(bot,prop)
+    ret.slangFactor = _inferSlang(bot, user)
 
     return ret
