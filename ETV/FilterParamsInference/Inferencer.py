@@ -82,20 +82,21 @@ def _inferKeywords(bot,prop,n = 50):
 def _inferSlang(bot, text):
     factor = 0
     slang_words = []
+    text_list = text.lower().split()
 
     for abbr in abbr_list:
         shortened = abbr_list[abbr][0]
-        if shortened not in slang_words:
-            slang_words.append(shortened)
+        if shortened.lower() not in slang_words:
+            slang_words.append(shortened.lower())
     for ender in enders_list:
-        if ender not in slang_words:
-            slang_words.append(ender)
+        if ender.lower() not in slang_words:
+            slang_words.append(ender.lower())
     for starter in starters_list:
-        if starter not in slang_words:
-            slang_words.append(starter)
+        if starter.lower() not in slang_words:
+            slang_words.append(starter.lower())
 
     for word in slang_words:
-        if text.find(word) > -1:
+        if word in text_list:
             factor += 2
 
     if factor > 10:
