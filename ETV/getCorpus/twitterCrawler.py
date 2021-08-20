@@ -18,7 +18,7 @@ corpus_file = open('RealMadrid.txt', 'a', encoding="utf-8")
 
 for tweet in tweepy.Cursor(api.search, q="#RealMadrid", count=100, lang="en", since="2021-01-01").items():
     # to separate tweets, we make sure they all end in a dot
-    final_tweet = "tweet.text"
+    final_tweet = tweet.text
     if not final_tweet.endswith('.'):
         final_tweet = final_tweet + '.'
     corpus_file.write(final_tweet)
