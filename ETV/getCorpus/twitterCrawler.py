@@ -14,10 +14,13 @@ auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth, wait_on_rate_limit=True)
 
 # Open/Create a file to append data
-csvFile = open('ua.csv', 'a')
-# Use csv Writer
-csvWriter = csv.writer(csvFile)
+corpus_file = open('RealMadrid.txt', 'a', encoding="utf-8")
 
 for tweet in tweepy.Cursor(api.search, q="#RealMadrid", count=100, lang="en", since="2021-01-01").items():
-    print(tweet.created_at, tweet.text)
-    csvWriter.writerow([tweet.created_at, tweet.text.encode('utf-8')])
+    # to separate tweets, we make sure they all end in a dot
+    final_tweet = "tweet.text"
+    if not final_tweet.endswith('.'):
+        final_tweet = final_tweet + '.'
+    corpus_file.write(final_tweet)
+
+corpus_file.close()
