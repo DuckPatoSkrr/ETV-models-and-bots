@@ -49,8 +49,10 @@ def appendModelDescriptorList(mdl, model):
 def getModelDescriptorListObj(mdl):
     try:
         ret = json.loads(mdl)["list"]
+        utils.cprint("Model Descriptor List loaded")
     except json.JSONDecodeError:
         ret = []
+        utils.cprint("Model Descriptor List initialized")
     return ret
 
 def modelDescriptorListToJSON(mdl):
