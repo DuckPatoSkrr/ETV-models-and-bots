@@ -49,6 +49,7 @@ def appendModelDescriptorList(mdl, model):
 def getModelDescriptorListObj(mdl):
     try:
         ret = json.loads(mdl)["list"]
+        ret = [utils.asciiToText(m) for m in ret]
         utils.cprint("Model Descriptor List loaded")
     except json.JSONDecodeError as e:
         utils.cprint(f"Error while loading MDL: {str(e)}")
@@ -57,7 +58,8 @@ def getModelDescriptorListObj(mdl):
     return ret
 
 def modelDescriptorListToJSON(mdl):
-    jsonFile = {"list":mdl}
+    mdlt = [utils.textToAscii(m) for m in mdl]
+    jsonFile = {"list":mdlt}
     return json.dumps(jsonFile)
 
 def jsonConstructor(jsonin):
