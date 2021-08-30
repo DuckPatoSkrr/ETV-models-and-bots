@@ -50,7 +50,8 @@ def getModelDescriptorListObj(mdl):
     try:
         ret = json.loads(mdl)["list"]
         utils.cprint("Model Descriptor List loaded")
-    except json.JSONDecodeError:
+    except json.JSONDecodeError as e:
+        utils.cprint(f"Error while loading MDL: {str(e)}")
         ret = []
         utils.cprint("Model Descriptor List initialized")
     return ret
