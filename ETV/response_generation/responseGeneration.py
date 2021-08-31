@@ -100,7 +100,7 @@ def _pipeFormat(input, nchars):  # format text, this doesn't change the puntuati
             output += splitedInput[i] + "."
             i += 1
 
-        output = output.replace("\n\n", "\n")
+        output = output.replace("\n\n", " ")
         outList.append((output, duple[1]))
 
     return outList
