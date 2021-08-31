@@ -144,16 +144,18 @@ def _pipeKeywordCount(input,
     return outList
 
 
-def _processedText(input, nchars, positivityFactor, keywords):  # filters the output of the model
+def _processedText(input, nchars, positivityFactor, keywords, slangFactor):  # filters the output of the model
     output = _duple(input)
     output = _pipeFormat(output, nchars)
     output = _pipePositivity(output, positivityFactor)
+    output = _pipeSlang(output, slangFactor)
     output = _pipeKeywordCount(output, keywords)
     return _maxPoints(output)
 
 
 def generateResponse(model,
                      posFactor,
+                     slangFactor,
                      keyWords,
                      nchars,
                      number_of_responses,
@@ -163,4 +165,4 @@ def generateResponse(model,
     textGenerated = gpt2.generate(sess, prefix=prefix, run_name=model.name,
                                   nsamples=number_of_responses,
                                   return_as_list=True, length=nchars)
-    return _processedText(textGenerated, nchars, posFactor, keyWords)
+    return _processedText(textGenerated, nchars, posFactor, keyWords, slangFactor)
