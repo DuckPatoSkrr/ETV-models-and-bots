@@ -85,6 +85,8 @@ class BotInstance:
         if not self.mymodels:
             utils.error("Cant generate response, untrained bot.")
 
+        utils.cprint(f"Generating response, params recived: {filterParams.toString()}")
+
         inferedParams = Inferencer.inferParams(self, context)
         finalParams = utils.fusionParams(filterParams, inferedParams)
         finalParams = utils.filterParams(finalParams.split(" "), 0)
