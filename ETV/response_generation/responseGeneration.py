@@ -149,7 +149,7 @@ def _processedText(input, nchars, positivityFactor, keywords):  # filters the ou
     output = _pipeFormat(output, nchars)
     output = _pipePositivity(output, positivityFactor)
     #output = _pipeSlang(output, slangFactor)
-    output = _pipeKeywordCount(output, keywords)
+    #output = _pipeKeywordCount(output, keywords)
     return _maxPoints(output)
 
 
