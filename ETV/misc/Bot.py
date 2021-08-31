@@ -90,7 +90,7 @@ class BotInstance:
         finalParams = utils.filterParams(finalParams.split(" "), 0)
 
         model = self._getModelBasedOnContext(context)
-        return responseGeneration.generateResponse(model, finalParams.posFactor, finalParams.slangFactor, finalParams.keywords,
+        return responseGeneration.generateResponse(model, finalParams.posFactor, finalParams.keywords,
                                                    finalParams.nchars,
                                                    finalParams.number_of_responses,
                                                    prefix)
