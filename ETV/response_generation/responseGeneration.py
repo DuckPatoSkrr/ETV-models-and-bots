@@ -32,7 +32,7 @@ def _pipePositivity(input, posFactor):
         prop = classifier.classify(duple[0])
         res = 0
         for i in prop:
-            res += 10 - (abs(posFactor - prop.sentiment_polarity) * 5)
+            res += 10 - (abs(posFactor - i.sentiment_polarity) * 5)
         res /= len(prop)
         outList.append((duple[0], duple[1] + res))
 
