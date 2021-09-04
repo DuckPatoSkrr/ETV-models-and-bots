@@ -1,0 +1,54 @@
+@startuml
+
+entity "Backend" as BACKEND
+participant "scripts.py" as SCRIPTS
+participant "Bots.py" as BOTS
+participant "Inferencer.py" as INFERENCER
+participant "PrologManager.py" as PROLOG
+participant "ResponseGeneration.py" as RESP
+entity "BD Relaciones" as BD
+entity "GPT2" as GPT
+
+BACKEND -> SCRIPTS : getResponse "jsonBot" "context"
+
+
+
+activate SCRIPTS
+SCRIPTS -> SCRIPTS : Identifica comando\nVerifica validez de argumentos
+SCRIPTS -> BOTS : Carga instancia de Bot
+activate BOTS
+BOTS -> SCRIPTS : Crea instancia y la devuelve
+deactivate BOTS
+
+SCRIPTS -> BOTS : generateResponse
+activate BOTS
+BOTS -> BOTS : Selecciona modelo según el contexto
+BOTS -> INFERENCER : Solicita inferencia de parámetros
+activate INFERENCER
+INFERENCER -> PROLOG : Realiza consultas
+activate PROLOG
+PROLOG -> BD : Produce consultas a traves de Prolog en BD
+BD -> PROLOG : Devuelve resultados
+PROLOG -> INFERENCER : Devuelve resultados
+deactivate PROLOG
+INFERENCER -> INFERENCER : Produce parámetros para bot y contexto dados
+INFERENCER -> BOTS : Devuelve parametros inferidos
+deactivate INFERENCER
+BOTS -> RESP : Generar respuesta 
+activate RESP
+RESP -> GPT : Generar candidatos
+GPT -> RESP : Devuelve candidatos
+RESP -> RESP : Evalua candidatos
+RESP -> BOTS : Devuelve mejor candidato
+deactivate RESP
+BOTS -> SCRIPTS : Devuelve respuesta
+
+deactivate BOTS
+
+
+SCRIPTS -> BACKEND : Devuelve respuesta generada
+deactivate SCRIPTS
+
+
+
+@enduml
