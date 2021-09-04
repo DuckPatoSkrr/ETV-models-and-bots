@@ -1,0 +1,20 @@
+@startuml
+
+entity "Backend" as BACKEND
+participant "scripts.py" as SCRIPTS
+participant "Bots.py" as BOTS
+
+BACKEND -> SCRIPTS : create age level_of_education "likes" "dislikes"
+
+activate SCRIPTS
+SCRIPTS -> SCRIPTS : Identifica comando\nVerifica validez de argumentos
+SCRIPTS -> BOTS : Solicita creación de nuevo Bot con parametros introducidos
+activate BOTS
+BOTS -> SCRIPTS : Crea bot y lo devuelve como JSON
+deactivate BOTS
+SCRIPTS -> BACKEND : Devuelve bot creado
+deactivate SCRIPTS
+
+
+
+@enduml
