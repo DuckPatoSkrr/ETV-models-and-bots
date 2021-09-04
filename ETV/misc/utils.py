@@ -11,12 +11,14 @@ class FilterParams:
     posFactor = None
     nchars = -1
     number_of_responses = 10
+    slangFactor = None
 
     def toString(self):
         kw = ""
         pf = ""
         nchars = ""
         nor = ""
+        sf = ""
         ret = ""
 
         if not (self.posFactor is None):
@@ -36,6 +38,10 @@ class FilterParams:
                 kw += str(self.keywords[w]) + ','
             kw += str(self.keywords[len(self.keywords) - 1])
             ret = f"{kw} {ret}"
+
+        if not (self.slangFactor is None):
+            sf = f"-sf {self.slangFactor}"
+            ret = f"{sf} {ret}"
 
         return ret.rstrip()
 
@@ -158,6 +164,13 @@ def filterParams(vec, pos): #devuelve objeto FilterParams
             except customErrors.InvalidCharsError as e:
                 error("bad param: number of responses" + " - " + str(e))
             ret.number_of_responses = int(vec[i])
+        elif (vec[i] == "-sf"):
+            i += 1
+            try:
+                checkFloat(vec[i])
+            except customErrors.InvalidCharsError as e:
+                error("bad param: slangFactor" + " - " + str(e))
+            ret.slangFactor = float(vec[i])
         else:
             error("unknown param: " + str(vec[i]))
         i += 1

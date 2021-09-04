@@ -14,13 +14,23 @@ auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth, wait_on_rate_limit=True)
 
 # Open/Create a file to append data
-corpus_file = open('RealMadrid.txt', 'a', encoding="utf-8")
+corpus_file = open('sports.txt', 'a', encoding="utf-8")
 
-for tweet in tweepy.Cursor(api.search, q="#RealMadrid", count=100, lang="en", since="2021-01-01").items():
+print("Opened file")
+i = 0
+queue = "referee"
+
+for tweet in tweepy.Cursor(api.search, q=queue, count=100, lang="en", since="2021-01-01").items():
+    print(f"Adding tweet {i}")
     # to separate tweets, we make sure they all end in a dot
     final_tweet = tweet.text
     if not final_tweet.endswith('.'):
         final_tweet = final_tweet + '.'
     corpus_file.write(final_tweet)
+    i = i + 1
+    if i >= 5000:
+        break
 
+print("Closing file with words from " + queue)
 corpus_file.close()
+print("Done")

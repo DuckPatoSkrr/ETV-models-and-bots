@@ -94,7 +94,7 @@ class BotInstance:
         model = self._getModelBasedOnContext(context)
         return responseGeneration.generateResponse(model, finalParams.posFactor, finalParams.keywords,
                                                    finalParams.nchars,
-                                                   finalParams.number_of_responses,
+                                                   finalParams.number_of_responses, finalParams.slangFactor,
                                                    prefix)
 
     def learn(self, modelList):
@@ -117,5 +117,5 @@ def jsonConstructor(inpt):
         likes = out["likes"]
         dislikes = out["dislikes"]
     except Exception as e:
-        raise customErrors.BadParamError("Bad JSON constructor: " + str(e))
+            raise customErrors.BadParamError("Bad JSON constructor: " + str(e))
     return BotInstance(age,level_of_education, modelsList, likes, dislikes)
