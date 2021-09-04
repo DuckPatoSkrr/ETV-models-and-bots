@@ -6,6 +6,7 @@ participant "Bots.py" as BOTS
 participant "Inferencer.py" as INFERENCER
 participant "PrologManager.py" as PROLOG
 participant "ResponseGeneration.py" as RESP
+participant "SentimentAnalisys.py" as SENT
 entity "BD Relaciones" as BD
 entity "GPT2" as GPT
 
@@ -25,6 +26,10 @@ activate BOTS
 BOTS -> BOTS : Selecciona modelo según el contexto
 BOTS -> INFERENCER : Solicita inferencia de parámetros
 activate INFERENCER
+INFERENCER -> SENT : Solicita analisis de contexto
+activate SENT
+SENT -> INFERENCER : Devuelve objeto Properties con contexto analizado
+deactivate SENT
 INFERENCER -> PROLOG : Realiza consultas
 activate PROLOG
 PROLOG -> BD : Produce consultas a traves de Prolog en BD

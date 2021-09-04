@@ -1,6 +1,6 @@
 import os.path
 from datetime import datetime
-from misc import Bot, customErrors, utils
+from misc import Bot, customErrors, utils, factsGeneration
 from models import models
 import sys
 
@@ -42,7 +42,9 @@ def trainModel(name,pathCorpus, mdl, numIterations):
 
     mdl = models.getModelDescriptorListObj(mdl)
     ret = models.appendModelDescriptorList(mdl, models.Model(name, pathCorpus,numIterations))
-    #descriptor de modelo
+
+    factsGeneration.generateFacts(os.path.join(models.corpus_dir,pathCorpus))
+
     return models.modelDescriptorListToJSON(ret)
 
 
