@@ -10,3 +10,6 @@ spacytextblob
 pyswip
 (comandos a ejecutar en consola, preferiblemente en el entorno)
 python -m spacy download en_core_web_sm
+
+Otros:
+SwiProlog
