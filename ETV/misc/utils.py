@@ -195,12 +195,15 @@ def removeChars(text, *chars, char=" "):
     return text
 
 def textToAscii(text):
-    out =str(ord(text[0]))
-    c= 1
+    out = ""
+    c= 0
     while c < len(text):
-        out += ' ' + str(ord(text[c]))
+        try:
+            out += ' ' + str(ord(text[c]))
+        except IndexError:
+            pass
         c+=1
-    return out
+    return out.lstrip()
 
 def asciiToText(text):
     out = ""
