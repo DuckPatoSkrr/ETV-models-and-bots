@@ -83,7 +83,7 @@ def dictToFacts(text_dict):
 
     # now we add the new rules
     for pair in dict_aux:
-        text_line = "relacionTerm(\"{0}\",\"{1}\",{2}).".format(pair[0], pair[1], dict_aux[pair])
+        text_line = "relacion(\"{0}\",\"{1}\",{2}).".format(pair[0], pair[1], dict_aux[pair])
         w_file.write(text_line)
 
     w_file.close()
