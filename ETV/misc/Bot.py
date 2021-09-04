@@ -1,3 +1,5 @@
+import pyswip.prolog
+
 from misc import customErrors, utils
 from response_generation import responseGeneration
 import json
@@ -30,10 +32,11 @@ def _relation(likes, word):
     man = PrologManager.Manager()
 
     for i in likes:
-        iunified = utils.unifyWord(i)
-        wordunified = utils.unifyWord(word)
-        res = man.consult(f"show_r({PrologManager.formatText(iunified)},{PrologManager.formatText(wordunified)},P)")
-        ret += abs(res["P"])
+        try:
+            res = man.consult(f"show_r({PrologManager.formatText(i)},{PrologManager.formatText(word)},P)")
+            ret += abs(res["P"])
+        except pyswip.prolog.PrologError as e:
+            utils.cprint(f"PROLOG ERROR: {str(e)}")
     return ret
 
 

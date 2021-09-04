@@ -161,7 +161,16 @@ def generateResponse(model,
                      prefix=None):
     sess = gpt2.start_tf_sess()
     gpt2.load_gpt2(sess, run_name=model.name)
-    textGenerated = gpt2.generate(sess, prefix=prefix, run_name=model.name,
-                                  nsamples=number_of_responses,
+
+    i = 0
+    textGenerated = []
+    while i < number_of_responses:
+        nor = number_of_responses % 15
+        if(not nor):
+            nor = 15
+
+        textGenerated += gpt2.generate(sess, prefix=prefix, run_name=model.name,
+                                  nsamples=nor, batch_size=nor,
                                   return_as_list=True, length=nchars)
+        i+=nor
     return _processedText(textGenerated, nchars, posFactor, keyWords)
