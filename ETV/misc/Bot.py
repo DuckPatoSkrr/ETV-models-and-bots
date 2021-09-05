@@ -8,15 +8,20 @@ from FilterParamsInference import Inferencer,PrologManager
 from models import models
 from misc import WebSearch
 
-learn_threshold = 0.3
+learn_threshold = 0
 
 def _punt(modelK, inputK):
     ret = 0
-    for m in inputK:
-        u = utils.unifyWord(m)
-        if (u in modelK):
-            ret += 1
-    return ret
+    words2compare = []
+    for sentence in inputK:
+        words2compare += sentence.pnouns
+        words2compare += sentence.nouns
+
+    res = 0
+    for w in words2compare:
+        res += _relation(modelK, w)
+
+    return res / (len(words2compare) * len(modelK))
 
 
 def _extractKWfromContext(context):  # devuelve lista
@@ -47,14 +52,17 @@ class BotInstance:
     def _getModelBasedOnContext(self, context): #TODO igual esto se puede hacer mejor
         maxp = -1
         ret = None
+        cl = sentimentAnalysis.Classifier()
+        prop = cl.classify(context)
         for m in self.mymodels:
             model = models.jsonConstructor(m)
-            p = _punt(model.keywords, context)
+            p = _punt(model.keywords, prop)
             if(p > maxp):
                 ret = model
                 maxp = p
         if(ret is None):
             ret = models.jsonConstructor(self.mymodels[0])
+            utils.cprint("Selected random model.")
         return ret
 
     def _modelFits(self,model):
