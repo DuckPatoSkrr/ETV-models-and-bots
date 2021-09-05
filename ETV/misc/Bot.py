@@ -11,7 +11,7 @@ from misc import WebSearch
 learn_threshold = 0
 
 def _punt(modelK, inputK):
-    ret = 0
+
     words2compare = []
     for sentence in inputK:
         words2compare += sentence.pnouns
@@ -19,7 +19,7 @@ def _punt(modelK, inputK):
 
     res = 0
     for w in words2compare:
-        res += _relation(modelK, w)
+        res += _relation(modelK, utils.unifyWord(w))
 
     return res / (len(words2compare) * len(modelK))
 
