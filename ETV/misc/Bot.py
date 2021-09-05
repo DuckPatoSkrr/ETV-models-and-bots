@@ -8,7 +8,7 @@ from FilterParamsInference import Inferencer,PrologManager
 from models import models
 from misc import WebSearch
 
-learn_threshold = 0
+learn_threshold = 0.3
 
 def _punt(modelK, inputK):
     ret = 0
@@ -59,11 +59,12 @@ class BotInstance:
 
     def _modelFits(self,model):
         punt = 0
+        total = (len(self.likes) + len(self.dislikes)) * len(model.keywords)
         for kw in model.keywords:
             punt += _relation(self.likes,kw)
             punt += _relation(self.dislikes,kw)
 
-        return punt >= learn_threshold
+        return (punt / total) >= learn_threshold
 
 
 
