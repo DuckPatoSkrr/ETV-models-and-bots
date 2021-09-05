@@ -12,12 +12,15 @@ def generateFacts(corpus_file):
     pairs_dict = defaultdict(list)
     load_chunk = lambda f: ' '.join(f.readlines(1024))
 
-    with open(corpus_file, "r") as file:
+    with open(corpus_file, "r", errors="ignore") as file:
         chunk = load_chunk(file)
         while chunk:
             text = chunk.lower()
-            for sentence in re.split(';|,|\.|:', text):
-                pairs_dict = checkSentence(pairs_dict, sentence)
+            classifier = sentimentAnalysis.Classifier()
+            res = classifier.classify(text)
+            for prop in res:
+                if prop.sentiment_polarity != 0:
+                    pairs_dict = checkSentence(pairs_dict, prop)
             chunk = load_chunk(file)
 
     for pair in pairs_dict:
@@ -29,21 +32,17 @@ def generateFacts(corpus_file):
 
 # the input will be a defaultdic dictionary where the keys are the two words related
 # and the values are lists of the positivity values when they both appear
-def checkSentence(pairs_dict, sentence):
-    if sentence is None:
+def checkSentence(pairs_dict, prop):
+    if prop is None:
         return pairs_dict
-    classifier = sentimentAnalysis.Classifier()
-    res = classifier.classify(sentence)
-    pnouns = []
-    for prop in res:
-        pnouns.extend(prop.pnouns)
+    pnouns = prop.pnouns
     pamount = len(pnouns)
     if pamount > 1:
         for i in range(pamount):
             pnouns[i] = unifyWord(pnouns[i])
         for i in range(pamount):
             for j in range(i + 1, pamount):
-                pairs_dict[(pnouns[i], pnouns[j])].append(res.sentiment_polarity)
+                pairs_dict[(pnouns[i], pnouns[j])].append(prop.sentiment_polarity)
     return pairs_dict
 
 
@@ -85,7 +84,7 @@ def dictToFacts(text_dict):
 
     # now we add the new rules
     for pair in dict_aux:
-        text_line = "relacion(\"{0}\",\"{1}\",{2}).".format(pair[0], pair[1], dict_aux[pair])
+        text_line = "relacion(\"{0}\",\"{1}\",{2}).\n".format(pair[0], pair[1], dict_aux[pair])
         w_file.write(text_line)
 
     w_file.close()
