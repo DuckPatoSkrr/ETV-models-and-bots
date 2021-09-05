@@ -13,7 +13,7 @@ def tokenize(inpath, outpath):
     for w in string.punctuation:
         cachedStopWords.add(w)
     loadChunk = lambda f: ' '.join(f.readlines(1024))
-    outf = open(outpath,"w")
+    outf = open(outpath, "w", errors="ignore")
     translator = str.maketrans('', '', string.punctuation)
 
     with open(inpath,"r") as file:
