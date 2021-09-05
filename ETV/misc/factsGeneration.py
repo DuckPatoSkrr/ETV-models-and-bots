@@ -1,6 +1,7 @@
 from misc.utils import unifyWord
 from sentiment_analysis import sentimentAnalysis
 from collections import defaultdict
+from misc import utils
 import re
 
 
@@ -84,7 +85,10 @@ def dictToFacts(text_dict):
 
     # now we add the new rules
     for pair in dict_aux:
-        text_line = "relacion(\"{0}\",\"{1}\",{2}).\n".format(pair[0], pair[1], dict_aux[pair])
-        w_file.write(text_line)
+        try:
+            text_line = "relacion(\"{0}\",\"{1}\",{2}).\n".format(pair[0], pair[1], dict_aux[pair])
+            w_file.write(text_line)
+        except Exception as e:
+            utils.cprint(f"Error adding fact: {str(e)}")
 
     w_file.close()
