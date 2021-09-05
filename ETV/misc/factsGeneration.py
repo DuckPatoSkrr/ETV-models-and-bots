@@ -34,7 +34,9 @@ def checkSentence(pairs_dict, sentence):
         return pairs_dict
     classifier = sentimentAnalysis.Classifier()
     res = classifier.classify(sentence)
-    pnouns = res.pnouns
+    pnouns = []
+    for prop in res:
+        pnouns.extend(prop.pnouns)
     pamount = len(pnouns)
     if pamount > 1:
         for i in range(pamount):
