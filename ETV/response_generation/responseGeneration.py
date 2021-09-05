@@ -1,4 +1,5 @@
 import random
+import re
 
 import gpt_2_simple as gpt2
 from sentiment_analysis import sentimentAnalysis
@@ -151,14 +152,17 @@ def _pipeFormat(input, nchars):  # format text, this doesn't change the puntuati
     outList = []
     for duple in input:
         output = ""
-        splitedInput = duple[0].split(".")
+        splitedInput = re.split(';|,|\.|:|\?|!',duple[0])
         i = 0
         while (len(output) + len(splitedInput[i]) < nchars and i < len(splitedInput)):
             output += splitedInput[i] + "."
             i += 1
 
         output = output.replace("\n\n", " ")
-        outList.append((output, duple[1]))
+        if not output:
+            outList.append((output, -1000))
+        else:
+            outList.append((output, duple[1]))
 
     return outList
 

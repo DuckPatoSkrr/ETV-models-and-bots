@@ -49,7 +49,7 @@ class BotInstance:
 
     # PRIVATE
 
-    def _getModelBasedOnContext(self, context): #TODO igual esto se puede hacer mejor
+    def _getModelBasedOnContext(self, context):
         maxp = -1
         ret = None
         cl = sentimentAnalysis.Classifier()
