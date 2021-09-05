@@ -1,5 +1,5 @@
 import requests
-import utils
+from misc import utils
 
 class searchResults:
     header = ""
