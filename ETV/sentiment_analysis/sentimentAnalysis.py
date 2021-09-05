@@ -58,5 +58,12 @@ class Classifier:
                 i+=1
             ret.insert(i,prop)
 
+        i = 0
+        while(i < len(ret)):
+            if(ret[i] == ""):
+                ret.pop(i)
+            else:
+                i += 1
+
         return ret
 
