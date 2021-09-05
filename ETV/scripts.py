@@ -43,7 +43,11 @@ def trainModel(name,pathCorpus, mdl, numIterations):
     mdl = models.getModelDescriptorListObj(mdl)
     ret = models.appendModelDescriptorList(mdl, models.Model(name, pathCorpus,numIterations))
 
+    print("Generating facts...")
+
     factsGeneration.generateFacts(os.path.join(models.corpus_dir,pathCorpus))
+
+    print("Facts generated")
 
     return models.modelDescriptorListToJSON(ret)
 
