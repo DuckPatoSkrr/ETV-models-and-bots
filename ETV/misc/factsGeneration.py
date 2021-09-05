@@ -61,7 +61,7 @@ def dictToFacts(text_dict):
     # now we delete the lines with term relationship rules
     # and store them in our aux dictionary
     for i in range(0, len(lines)):
-        if lines[i].startswith("relacionTerm"):
+        if lines[i].startswith("relacion"):
             line_list = lines[i].split("\"");
             value_aux = line_list[4][1:].split(")");
             dict_aux[(line_list[1], line_list[3])] = float(value_aux[0])
