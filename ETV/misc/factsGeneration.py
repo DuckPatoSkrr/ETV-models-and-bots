@@ -1,5 +1,5 @@
-from ETV.misc.utils import unifyWord
-from ETV.sentiment_analysis import sentimentAnalysis
+from misc.utils import unifyWord
+from sentiment_analysis import sentimentAnalysis
 from collections import defaultdict
 import re
 
