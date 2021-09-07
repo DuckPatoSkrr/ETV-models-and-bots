@@ -107,7 +107,7 @@ class BotInstance:
         return responseGeneration.generateResponse(model, finalParams.posFactor, finalParams.keywords,
                                                    finalParams.nchars,
                                                    finalParams.number_of_responses, finalParams.slangFactor,
-                                                   prefix)
+                                                   prefix=context)
 
     def learn(self, modelList):
         for m in modelList:

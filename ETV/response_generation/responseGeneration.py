@@ -233,7 +233,8 @@ def generateResponse(model,
         if(not nor):
             nor = 15
 
-        textGenerated += gpt2.generate(sess, prefix=prefix, run_name=model.name,
+        textGenerated += gpt2.generate(sess, prefix=prefix, include_prefix=False,
+                                       run_name=model.name,
                                   nsamples=nor, batch_size=nor,
                                   return_as_list=True, length=nchars)
         i += nor
