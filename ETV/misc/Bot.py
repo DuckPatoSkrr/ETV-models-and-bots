@@ -1,3 +1,5 @@
+import pyswip.prolog
+
 from misc import customErrors, utils
 from response_generation import responseGeneration
 import json
@@ -9,12 +11,17 @@ from misc import WebSearch
 learn_threshold = 0
 
 def _punt(modelK, inputK):
-    ret = 0
-    for m in inputK:
-        u = utils.unifyWord(m)
-        if (u in modelK):
-            ret += 1
-    return ret
+
+    words2compare = []
+    for sentence in inputK:
+        words2compare += sentence.pnouns
+        words2compare += sentence.nouns
+
+    res = 0
+    for w in words2compare:
+        res += _relation(modelK, utils.unifyWord(w))
+
+    return res / (len(words2compare) * len(modelK))
 
 
 def _extractKWfromContext(context):  # devuelve lista
@@ -30,10 +37,11 @@ def _relation(likes, word):
     man = PrologManager.Manager()
 
     for i in likes:
-        iunified = utils.unifyWord(i)
-        wordunified = utils.unifyWord(word)
-        res = man.consult(f"show_r({PrologManager.formatText(iunified)},{PrologManager.formatText(wordunified)},P)")
-        ret += abs(res["P"])
+        try:
+            res = man.consult(f"show_r({PrologManager.formatText(i)},{PrologManager.formatText(word)},P)")
+            ret += abs(res["P"])
+        except pyswip.prolog.PrologError as e:
+            utils.cprint(f"PROLOG ERROR: {str(e)}")
     return ret
 
 
@@ -41,26 +49,30 @@ class BotInstance:
 
     # PRIVATE
 
-    def _getModelBasedOnContext(self, context): #TODO igual esto se puede hacer mejor
+    def _getModelBasedOnContext(self, context):
         maxp = -1
         ret = None
+        cl = sentimentAnalysis.Classifier()
+        prop = cl.classify(context)
         for m in self.mymodels:
             model = models.jsonConstructor(m)
-            p = _punt(model.keywords, context)
+            p = _punt(model.keywords, prop)
             if(p > maxp):
                 ret = model
                 maxp = p
         if(ret is None):
             ret = models.jsonConstructor(self.mymodels[0])
+            utils.cprint("Selected random model.")
         return ret
 
     def _modelFits(self,model):
         punt = 0
+        total = (len(self.likes) + len(self.dislikes)) * len(model.keywords)
         for kw in model.keywords:
             punt += _relation(self.likes,kw)
             punt += _relation(self.dislikes,kw)
 
-        return punt >= learn_threshold
+        return (punt / total) >= learn_threshold
 
 
 
@@ -94,8 +106,8 @@ class BotInstance:
         model = self._getModelBasedOnContext(context)
         return responseGeneration.generateResponse(model, finalParams.posFactor, finalParams.keywords,
                                                    finalParams.nchars,
-                                                   finalParams.number_of_responses,
-                                                   prefix=context)
+                                                   finalParams.number_of_responses, finalParams.slangFactor,
+                                                   prefix)
 
     def learn(self, modelList):
         for m in modelList:
@@ -117,5 +129,5 @@ def jsonConstructor(inpt):
         likes = out["likes"]
         dislikes = out["dislikes"]
     except Exception as e:
-        raise customErrors.BadParamError("Bad JSON constructor: " + str(e))
+            raise customErrors.BadParamError("Bad JSON constructor: " + str(e))
     return BotInstance(age,level_of_education, modelsList, likes, dislikes)

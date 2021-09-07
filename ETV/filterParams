@@ -3,5 +3,6 @@
 -pf float               #positivity factor (default None)
 -nc int                 #max number of chars (default -1, "i.e." no limit)
 -nor int                #number of responses of the model (default 10)
+-sf float               #slang factor (default None, must be between 0 and 10)
 
 (not implemented)

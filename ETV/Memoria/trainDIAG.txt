@@ -1,0 +1,41 @@
+@startuml
+
+entity "Backend Server" as BACKEND
+participant "scripts.py" as SCRIPTS
+participant "models.py" as MOD
+participant "factsGeneration.py" as FACT
+entity "BD Relaciones" as BD
+entity "GPT2" as GPT
+entity "WordCounter" as WC
+
+BACKEND -> SCRIPTS : trainModel name pathCorpus "modelDescriptorList"
+
+activate SCRIPTS
+SCRIPTS -> SCRIPTS : Identifica comando\nVerifica validez de argumentos
+
+SCRIPTS -> MOD : solicita entrenar nuevo modelo
+activate MOD
+MOD -> GPT : solicita entrenar nuevo modelo
+activate GPT
+GPT -> MOD: confirma exito en entrenamiento
+deactivate GPT
+MOD -> WC : solicita conteo de palabras
+activate WC
+WC -> MOD : devuelve keywords del corpus
+deactivate WC
+MOD -> MOD : construye objeto Model
+
+MOD -> SCRIPTS : devuelve instancia
+deactivate MOD
+SCRIPTS -> SCRIPTS : añade modelo a MDL
+SCRIPTS -> FACT : lanza lectura de nuevas relaciones
+activate FACT
+FACT -> FACT : procesa corpus en busca de nuevas relaciones
+FACT -> BD : añade nuevas relaciones
+deactivate FACT
+SCRIPTS -> BACKEND : devuelve MDL actualizada
+deactivate SCRIPTS
+
+
+
+@enduml

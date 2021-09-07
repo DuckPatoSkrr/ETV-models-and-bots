@@ -16,7 +16,7 @@ class Classifier:
 
     def classify(self, inText):
         ret =[]
-        for sentence in re.split(';|,|\.|:', inText):
+        for sentence in re.split(';|,|\.|:|\?|!', inText):
             doc = self.nlp(sentence)
             sentiment_polarity = doc._.polarity
             sentiment_assessments = doc._.assessments
@@ -57,6 +57,13 @@ class Classifier:
             while(i < len(ret) and abs(ret[i].sentiment_polarity) > abs(prop.sentiment_polarity)):
                 i+=1
             ret.insert(i,prop)
+
+        i = 0
+        while(i < len(ret)):
+            if(ret[i] == ""):
+                ret.pop(i)
+            else:
+                i += 1
 
         return ret
 

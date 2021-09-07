@@ -1,4 +1,5 @@
 import random
+import re
 
 import gpt_2_simple as gpt2
 from sentiment_analysis import sentimentAnalysis
@@ -45,8 +46,12 @@ def _pipeSlang(input, slangFactor):
     if (slangFactor is None):
         return input
 
+    # make sure slang factor stays between 0 and 10
+    slangFactor = min(10, max(0, slangFactor))
+
     outList = []
-    addWordChance = slangFactor * 3  # max chance of 30% at factor 10
+    startWordChance = slangFactor * 3  # max chance of 30% at factor 10
+    endWordChance = slangFactor * 6  # max chance of 60% at factor 10
 
     enders_total = 0
     for ender in enders_list:
@@ -59,29 +64,82 @@ def _pipeSlang(input, slangFactor):
     for duple in input:
         text = duple[0]
 
+        if len(text) <= 1:
+            outList.append((text, duple[1]))
+            continue
+
+        # Try to add
+        if random.randint(0, 99) < startWordChance:  # Start
+            # Extra chance for more slang if word is added
+            slangFactor = min(10, slangFactor + 1)
+            word_index = random.randint(1, starters_total)
+            for starter in starters_list:
+                word_index -= starters_list[starter]
+                if word_index <= 0:
+                    if len(text) > 2:
+                        if not text[1].isupper():
+                            text = text[0].lower() + text[1:]
+                    text = starter + " " + text
+                    break
+
+        if random.randint(0, 99) < endWordChance:  # end
+            # Extra chance for more slang if word is added
+            slangFactor = min(10, slangFactor + 1)
+            word_index = random.randint(1, enders_total)
+            for ender in enders_list:
+                word_index -= enders_list[ender]
+                if word_index <= 0:
+                    if len(text) > 0:
+                        last = len(text) - 1
+                        if text[last] == '.':
+                            text = text[0:last]
+                    text = text + " " + ender
+                    break
+
         # Try to replace
         for abbr in abbr_list:
             replaceChance = slangFactor * abbr_list[abbr][1]
             if random.randint(0, 99) < replaceChance:
-                text.replace(abbr, abbr_list[abbr][0])
+                text = text.replace(f" {abbr} ", f" {abbr_list[abbr][0]} ")
 
-        # Try to add
-        if random.randint(0, 99) < addWordChance:
-            # Start or end
-            if random.randint(0, 1) == 1:  # Start
-                word_index = random.randint(1, starters_total)
-                for starter in starters_list:
-                    word_index -= starters_list[starter]
-                    if word_index <= 0:
-                        text = starter + ", " + text
-                        break
-            else:  # end
-                word_index = random.randint(1, enders_total)
-                for ender in enders_list:
-                    word_index -= enders_list[ender]
-                    if word_index <= 0:
-                        text = text + " " + ender
-                        break
+        # Remove symbols
+        symbol_chance = slangFactor * 6  # max chance of 60% at factor 10
+        dotless_chance = slangFactor * 2 # max chance of 20% at factor 10
+        # Remove dots
+        if random.randint(0, 99) < dotless_chance:
+            slangFactor = min(10, slangFactor + 2)
+            text = text.replace(".", "")
+        elif random.randint(0, 49) < symbol_chance:
+            if len(text) > 0:
+                last = len(text) - 1
+                if text[last] == '.':
+                    text = text[0:last]
+        # Remove apostrophe
+        if random.randint(0, 99) < symbol_chance:
+            slangFactor = min(10, slangFactor + 1)
+            text = text.replace("\'", "")
+        # Remove commas
+        if random.randint(0, 99) < symbol_chance:
+            slangFactor = min(10, slangFactor + 1)
+            text = text.replace(",", "")
+
+        # Capital letters? Hell no
+        lowercase_chance = slangFactor * 8  # max chance of 80% at factor 10
+        if random.randint(0, 99) < lowercase_chance:
+            text = text.lower()
+
+        # Let's add some typos too
+        typo_chance = slangFactor - 5
+        if len(text) > 2:
+            swapped = False
+            for i in range(1, len(text) - 1):
+                if swapped:
+                    swapped = False
+                    continue
+                if random.randint(0, 499) < typo_chance:
+                    if text[i].isalpha() and text[i+1].isalpha():
+                        text = text[:i] + text[i+1].lower() + text[i].lower() + text[i+2:]
+                        swapped = True
 
         outList.append((text, duple[1]))
 
@@ -94,14 +152,17 @@ def _pipeFormat(input, nchars):  # format text, this doesn't change the puntuati
     outList = []
     for duple in input:
         output = ""
-        splitedInput = duple[0].split(".")
+        splitedInput = re.split(';|,|\.|:|\?|!',duple[0])
         i = 0
         while (len(output) + len(splitedInput[i]) < nchars and i < len(splitedInput)):
             output += splitedInput[i] + "."
             i += 1
 
         output = output.replace("\n\n", " ")
-        outList.append((output, duple[1]))
+        if not output:
+            outList.append((output, -1000))
+        else:
+            outList.append((output, duple[1]))
 
     return outList
 
@@ -132,24 +193,26 @@ def _pipeKeywordCount(input,
     maxScore = 0
     for duple in input:
         appearances = 0
-        text_array = duple[0].split
+        text_array = duple[0].split()
         for word in keywords:
             appearances += text_array.count(word)
         if appearances > maxScore:
             maxScore = appearances
         auxList.append((duple[0], duple[1], appearances))
     for aux in auxList:
-        score = (aux[2] * 10) / maxScore
+        score = 0
+        if maxScore > 0:
+            score = (aux[2] * 10) / maxScore
         outList.append((aux[0], aux[1] + score))
     return outList
 
 
-def _processedText(input, nchars, positivityFactor, keywords):  # filters the output of the model
+def _processedText(input, nchars, positivityFactor, keywords, slangFactor):  # filters the output of the model
     output = _duple(input)
     output = _pipeFormat(output, nchars)
     output = _pipePositivity(output, positivityFactor)
-    #output = _pipeSlang(output, slangFactor)
-    #output = _pipeKeywordCount(output, keywords)
+    output = _pipeSlang(output, slangFactor)
+    output = _pipeKeywords(output, keywords)
     return _maxPoints(output)
 
 
@@ -158,11 +221,20 @@ def generateResponse(model,
                      keyWords,
                      nchars,
                      number_of_responses,
+                     slangFactor,
                      prefix=None):
     sess = gpt2.start_tf_sess()
     gpt2.load_gpt2(sess, run_name=model.name)
-    textGenerated = gpt2.generate(sess, prefix=prefix, include_prefix= False,
-                                  run_name=model.name,
-                                  nsamples=number_of_responses,
+
+    i = 0
+    textGenerated = []
+    while i < number_of_responses:
+        nor = number_of_responses % 15
+        if(not nor):
+            nor = 15
+
+        textGenerated += gpt2.generate(sess, prefix=prefix, run_name=model.name,
+                                  nsamples=nor, batch_size=nor,
                                   return_as_list=True, length=nchars)
-    return _processedText(textGenerated, nchars, posFactor, keyWords)
+        i += nor
+    return _processedText(textGenerated, nchars, posFactor, keyWords, slangFactor)

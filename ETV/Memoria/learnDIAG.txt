@@ -1,0 +1,35 @@
+@startuml
+
+entity "Backend" as BACKEND
+participant "scripts.py" as SCRIPTS
+participant "Bots.py" as BOTS
+participant "Models.py" as MODELS
+
+BACKEND -> SCRIPTS : trainBot "jsonBot" "modelDescriptorList"
+
+
+
+activate SCRIPTS
+SCRIPTS -> SCRIPTS : Identifica comando\nVerifica validez de argumentos
+SCRIPTS -> BOTS : Carga instancia de Bot
+activate BOTS
+BOTS -> SCRIPTS : Crea instancia y la devuelve
+deactivate BOTS
+
+SCRIPTS -> MODELS : Carga instancia de MDL
+activate MODELS
+MODELS -> SCRIPTS : Crea instancia y la devuelve
+deactivate MODELS
+
+SCRIPTS -> BOTS : Llama a bot.learn
+activate BOTS
+BOTS -> BOTS : Asocia modelos de la MDL que encajan con sus gustos
+BOTS -> SCRIPTS : Devuelve instancia actualizada como JSON
+deactivate BOTS
+
+SCRIPTS -> BACKEND : Devuelve bot actualizado
+deactivate SCRIPTS
+
+
+
+@enduml
