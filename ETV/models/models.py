@@ -36,7 +36,7 @@ def _generateKeywords(name,n=100):
             ret.append(line.rstrip("\n"))
 
     os.remove(os.path.join(counterPath,name))
-    #os.remove(os.path.join(counterPath,nameout))
+    os.remove(os.path.join(counterPath,nameout))
 
     return ret
 
