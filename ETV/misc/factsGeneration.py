@@ -43,7 +43,8 @@ def checkSentence(pairs_dict, prop):
             pnouns[i] = unifyWord(pnouns[i])
         for i in range(pamount):
             for j in range(i + 1, pamount):
-                pairs_dict[(pnouns[i], pnouns[j])].append(prop.sentiment_polarity)
+                if abs(prop.sentiment_polarity) > 0.2:
+                    pairs_dict[(pnouns[i], pnouns[j])].append(prop.sentiment_polarity)
     return pairs_dict
 
 
