@@ -13,6 +13,8 @@ class FilterParams:
     number_of_responses = 10
     slangFactor = None
 
+    params = ["keywords", "posFactor", "nchars", "number_of_responses", "slangFactor"]
+
     def toString(self):
         kw = ""
         pf = ""
@@ -122,14 +124,12 @@ def decModelDescriptor(md): #devuelve diccionario con elementos
 
 
 def fusionParams(p1,p2):
-    sp1 = p1.toString().split(" ")
-    sp2 = p2.toString().split(" ")
-    ret = p1.toString()
-    for c in sp2:
-        if c and (c[0] == '-') and not (c in sp1):
-            ret = f"{ret} {c} {sp2[sp2.index(c) + 1]}"
-
-    return ret
+    ret = p1
+    for p in FilterParams.params:
+        if(eval(f"FilterParams.{p} != p2.{p}")):
+            if(eval(f"FilterParams.{p} == p1.{p}")):
+                exec(f"ret.{p} = p2.{p}")
+    return ret.toString()
 
 
 def filterParams(vec, pos): #devuelve objeto FilterParams
