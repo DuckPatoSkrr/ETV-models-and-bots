@@ -152,7 +152,12 @@ def _pipeFormat(input, nchars):  # format text, this doesn't change the puntuati
     outList = []
     for duple in input:
         output = ""
-        splitedInput = re.split(';|,|\.|:|\?|!',duple[0])
+        try:
+            splitedInput = re.split("http.*com",duple[0])
+            splitedInput = re.sub("\s+"," ",' '.join(splitedInput))
+        except Exception:
+            splitedInput = duple[0]
+        splitedInput = re.split(';|,|\.|:|\?|!',splitedInput)
         i = 0
         while (len(output) + len(splitedInput[i]) < nchars and i < len(splitedInput)):
             output += splitedInput[i] + "."
