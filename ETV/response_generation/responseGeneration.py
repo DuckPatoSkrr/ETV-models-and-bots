@@ -240,7 +240,8 @@ def generateResponse(model,
 
         textGenerated += gpt2.generate(sess, prefix=prefix, include_prefix=False,
                                        run_name=model.name,
-                                  nsamples=nor, batch_size=nor,
-                                  return_as_list=True, length=nchars)
+                                    nsamples=nor, batch_size=nor,
+                                    return_as_list=True, length=nchars,
+                                    top_k=50,temperature=0.8)
         i += nor
     return _processedText(textGenerated, nchars, posFactor, keyWords, slangFactor)
