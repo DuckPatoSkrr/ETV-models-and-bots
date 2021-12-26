@@ -164,8 +164,8 @@ def _pipeFormat(input, nchars):  # format text, this doesn't change the puntuati
             i += 1
 
         output = output.replace("\n\n", " ")
-        if not output:
-            outList.append((output, -1000))
+        if not output or len(output) == output.count(" "):
+            outList.append((output, -100000))
         else:
             outList.append((output, duple[1]))
 
